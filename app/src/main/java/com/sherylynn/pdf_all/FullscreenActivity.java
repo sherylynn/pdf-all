@@ -1,0 +1,27 @@
+package com.sherylynn.pdf_all;
+
+import android.annotation.SuppressLint;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
+import com.github.barteksc.pdfviewer.PDFView;
+
+/**
+ * An example full-screen activity that shows and hides the system UI (i.e.
+ * status bar and navigation/system bar) with user interaction.
+ */
+public class FullscreenActivity extends AppCompatActivity {
+    private PDFView pdfView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_fullscreen);
+        pdfView = (PDFView) findViewById(R.id.pdfView);
+        pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
+        //pdfView.fromBytes().load();//本地打开
+        //pdfView.fromFile().load();//网络下载打开，（）放字节数组
+    }
+}
