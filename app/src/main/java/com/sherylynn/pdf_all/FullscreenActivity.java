@@ -25,7 +25,7 @@ public class FullscreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        PermissionUtils.verifyStoragePermissions(this);
         Intent intent = getIntent();
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
@@ -40,6 +40,11 @@ public class FullscreenActivity extends AppCompatActivity {
             pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         }
         Log.v("pdf-all-file", "最终："+"init完毕");
+        // hide actionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         //pdfView.fromBytes().load();//本地打开
