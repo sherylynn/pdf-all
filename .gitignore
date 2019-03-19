@@ -11,3 +11,8 @@
 /build
 /captures
 .externalNativeBuild
+
+#android studio
+/.idea/misc.xml
+/.idea/vcs.xml
+/.ide/gradle.xml
