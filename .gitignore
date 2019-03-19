@@ -15,4 +15,5 @@
 #android studio
 /.idea/misc.xml
 /.idea/vcs.xml
-/.ide/gradle.xml
+/.idea/gradle.xml
+/.idea
