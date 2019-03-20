@@ -17,3 +17,10 @@
 /.idea/vcs.xml
 /.idea/gradle.xml
 /.idea
+
+# travis ci 
+keystore.properties
+pdf-all.keystore
+
+# build
+app/release
