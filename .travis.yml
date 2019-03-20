@@ -20,13 +20,11 @@ android:
   - android-sdk-preview-license-.+
   - android-sdk-license-.+
 before_install:
+- openssl aes-256-cbc -K $encrypted_0cafb2288b4f_key -iv $encrypted_0cafb2288b4f_iv -in keystore.tar.enc -out keystore.tar -d
+- tar xvf keystore.tar
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-- openssl aes-256-cbc -K $encrypted_0cafb2288b4f_key -iv $encrypted_0cafb2288b4f_iv
-  -in pdf-all.keystore.enc -out pdf-all.keystore -d
-- openssl aes-256-cbc -K $encrypted_0cafb2288b4f_key -iv $encrypted_0cafb2288b4f_iv
-  -in keystore.properties.enc -out keystore.properties -d
 - chmod +x gradlew
 script:
 - "./gradlew assembleRelease"
@@ -34,6 +32,6 @@ deploy:
   provider: releases
   file: app/build/outputs/apk/app-release.apk
   api_key:
-    secure: "AuzF1ipsvH1S6UxWqCJ85VnhwoFWwK7VxAocEfc4eC0T9SotdJ2luQOO65qmH9yefiVxHRhxNVUtkMoHLeKUptgT8LSkDQWqm47x0kkcMi2f/XMjgbAuJ3o79k7nBsPVerCBMT+r1cENKJiQbaY+08peKIpeDe+yrKmYJLOyTlrSJQXcsP1mIWuK/hZQF8omp6/B8IAtY9zwJXCltz8rkzl41dIShKknpseVbtk44tpH1yRYx8u3MWt8pgxOqK/MuDCBCtWg3ZyihqtmJa2tSljWLgZmehEZLibbCfIpo9natvYandwF9c3v75SXj1XHcfYX57akWUBEoY7VmbVemdR72WbICD9N5sR0eTnn+ld9FJZPLEijmQ9/cxZaJv5Ue2uZSOvsEz+Paj0/vi549vmWtApHQP3V6gKE+D85aVfc5++NCzXDI3FzuK8OfqsZOI+wRQQjVcc/pQ9GcBCnH1+0lnUnsnPHgrsNl8yMvW8Jrxp6wi3ZGWmRbHec434vN8RtV3Co+dIKrNqnuOJicwCVHuxs8ZGSgeaT3AV3xKWjMStgU6ruo3PkwEnjWprMvQL6DL7t3524yxUJGxLXAEQyjyAmvGJmxUEUZsagTu8gJSOXo3k70YLX1tLxQ1u7UBxvtE42twKfVSo8WA0MknfO9ftAYixjn5M+DHeT33I="
+    secure: AuzF1ipsvH1S6UxWqCJ85VnhwoFWwK7VxAocEfc4eC0T9SotdJ2luQOO65qmH9yefiVxHRhxNVUtkMoHLeKUptgT8LSkDQWqm47x0kkcMi2f/XMjgbAuJ3o79k7nBsPVerCBMT+r1cENKJiQbaY+08peKIpeDe+yrKmYJLOyTlrSJQXcsP1mIWuK/hZQF8omp6/B8IAtY9zwJXCltz8rkzl41dIShKknpseVbtk44tpH1yRYx8u3MWt8pgxOqK/MuDCBCtWg3ZyihqtmJa2tSljWLgZmehEZLibbCfIpo9natvYandwF9c3v75SXj1XHcfYX57akWUBEoY7VmbVemdR72WbICD9N5sR0eTnn+ld9FJZPLEijmQ9/cxZaJv5Ue2uZSOvsEz+Paj0/vi549vmWtApHQP3V6gKE+D85aVfc5++NCzXDI3FzuK8OfqsZOI+wRQQjVcc/pQ9GcBCnH1+0lnUnsnPHgrsNl8yMvW8Jrxp6wi3ZGWmRbHec434vN8RtV3Co+dIKrNqnuOJicwCVHuxs8ZGSgeaT3AV3xKWjMStgU6ruo3PkwEnjWprMvQL6DL7t3524yxUJGxLXAEQyjyAmvGJmxUEUZsagTu8gJSOXo3k70YLX1tLxQ1u7UBxvtE42twKfVSo8WA0MknfO9ftAYixjn5M+DHeT33I=
   skip_cleanup: true
   on: tags:true
