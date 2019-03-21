@@ -2,48 +2,69 @@ apply plugin: 'com.android.application'
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
 
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+// for debug development
+if (!keystorePropertiesFile.exists()){
+    android {
+        compileSdkVersion 28
+        defaultConfig {
+            applicationId "com.sherylynn.pdf_all"
+            minSdkVersion 15
+            targetSdkVersion 28
+            versionCode 1
+            versionName "1.0"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+        }
+    }
+}else{
+
+    // Initialize a new Properties() object called keystoreProperties.
+    def keystoreProperties = new Properties()
 
 // Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-def keyStoreFile = file(keystoreProperties['storeFileLocal'])
+    def keyStoreFile = file(keystoreProperties['storeFileLocal'])
 
 // 判断是位于本地还是CI服务器
-if (!keyStoreFile.exists()){
-    keyStoreFile = file(keystoreProperties['storeFileCI'])
-}
+    if (!keyStoreFile.exists()){
+        keyStoreFile = file(keystoreProperties['storeFileCI'])
+    }
 
-android {
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPwd']
-            storeFile keyStoreFile
-            storePassword keystoreProperties['storePwd']
+    android {
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPwd']
+                storeFile keyStoreFile
+                storePassword keystoreProperties['storePwd']
+            }
+        }
+        compileSdkVersion 28
+        defaultConfig {
+            applicationId "com.sherylynn.pdf_all"
+            minSdkVersion 15
+            targetSdkVersion 28
+            versionCode 1
+            versionName "1.0"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+            }
         }
     }
-    compileSdkVersion 28
-    defaultConfig {
-        applicationId "com.sherylynn.pdf_all"
-        minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
