@@ -45,7 +45,7 @@ public class FullscreenActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-
+        UpdateUtils.CheckUpdateGithub(this);
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组

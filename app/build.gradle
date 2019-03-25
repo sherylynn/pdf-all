@@ -3,6 +3,23 @@ apply plugin: 'com.android.application'
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 
+def gitVersionCode(){
+    def cmd = 'git rev-list HEAD --first-parent --count'
+    cmd.execute().text.trim().toInteger()
+}
+def gitVersionTag(){
+    def cmd = 'git describe --tags'
+    def version =cmd.execute().text.trim()
+
+    def pattern = "-(\\d+)-g"
+    def matcher =version=~pattern
+    if (matcher){
+        version =version.substring(0,matcher.start())+"."+matcher[0][1]
+    } else {
+        version=version+".0"
+    }
+    return version
+}
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 // for debug development
 if (!keystorePropertiesFile.exists()){
@@ -61,6 +78,13 @@ if (!keystorePropertiesFile.exists()){
                 minifyEnabled false
                 proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
+            }
+        }
+        applicationVariants.all { variant ->
+            def mergedFlavoer =variant.mergedFlavor
+            if (variant.buildType.name.equals('release')){
+                mergedFlavoer.versionCode = gitVersionCode()
+                mergedFlavoer.versionName = gitVersionTag()
             }
         }
     }
