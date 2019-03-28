@@ -21,26 +21,8 @@ def gitVersionTag(){
     return version
 }
 def keystorePropertiesFile = rootProject.file("keystore.properties")
-// for debug development
-if (!keystorePropertiesFile.exists()){
-    android {
-        compileSdkVersion 28
-        defaultConfig {
-            applicationId "com.sherylynn.pdf_all"
-            minSdkVersion 15
-            targetSdkVersion 28
-            versionCode 1
-            versionName "1.0"
-            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        }
-        buildTypes {
-            release {
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
-        }
-    }
-}else{
+
+if (keystorePropertiesFile.exists()) {
 
     // Initialize a new Properties() object called keystoreProperties.
     def keystoreProperties = new Properties()
@@ -55,13 +37,16 @@ if (!keystorePropertiesFile.exists()){
         keyStoreFile = file(keystoreProperties['storeFileCI'])
     }
 
+}
     android {
-        signingConfigs {
-            release {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPwd']
-                storeFile keyStoreFile
-                storePassword keystoreProperties['storePwd']
+        if (keystorePropertiesFile.exists()) {
+            signingConfigs {
+                release {
+                    keyAlias keystoreProperties['keyAlias']
+                    keyPassword keystoreProperties['keyPwd']
+                    storeFile keyStoreFile
+                    storePassword keystoreProperties['storePwd']
+                }
             }
         }
         compileSdkVersion 28
@@ -69,26 +54,29 @@ if (!keystorePropertiesFile.exists()){
             applicationId "com.sherylynn.pdf_all"
             minSdkVersion 15
             targetSdkVersion 28
-            versionCode 1
-            versionName "1.0"
+            versionCode gitVersionCode()
+            versionName gitVersionTag()
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
         buildTypes {
             release {
                 minifyEnabled false
                 proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-                signingConfig signingConfigs.release
+                if (keystorePropertiesFile.exists()) {
+                    signingConfig signingConfigs.release
+                }
             }
         }
         applicationVariants.all { variant ->
-            def mergedFlavoer =variant.mergedFlavor
-            if (variant.buildType.name.equals('release')){
-                mergedFlavoer.versionCode = gitVersionCode()
-                mergedFlavoer.versionName = gitVersionTag()
+            variant.outputs.each { output ->
+                def mergedFlavoer =variant.mergedFlavor
+                if (variant.buildType.name.equals('release')){
+                    //mergedFlavoer.versionCode = 
+                    //mergedFlavoer.versionName = 
+                }
             }
         }
     }
-}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
