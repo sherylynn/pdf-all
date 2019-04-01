@@ -5,12 +5,15 @@ apply plugin: 'com.android.application'
 
 def gitVersionCode(){
     def cmd = 'git rev-list HEAD --first-parent --count'
-    cmd.execute().text.trim().toInteger()
+    def versionCode =cmd.execute().text.trim().toInteger()
+    println versionCode+''
+    return versionCode
 }
 def gitVersionTag(){
-    def cmd = 'git describe --tags'
+    def cmd = 'git tag'
+    //def cmd = 'git describe --tags'
     def version =cmd.execute().text.trim()
-
+/*
     def pattern = "-(\\d+)-g"
     def matcher =version=~pattern
     if (matcher){
@@ -18,7 +21,14 @@ def gitVersionTag(){
     } else {
         version=version+".0"
     }
+    //logger.debug(version)
+*/
+    println version+''
     return version
+    //return 'v0.0.0' // is true when remote is v0.0.1
+    //return 'v0.0.0.1' // is true when remote is v0.0.1
+    //return 'v0.0.0.9' //is true r v0.0.1
+    //return 'v0.0.1' //is false r v0.0.1
 }
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
