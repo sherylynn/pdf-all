@@ -10,10 +10,10 @@ def gitVersionCode(){
     return versionCode
 }
 def gitVersionTag(){
-    def cmd = 'git tag'
-    //def cmd = 'git describe --tags'
+    //def cmd = 'git tag'
+    def cmd = 'git describe --tags'
     def version =cmd.execute().text.trim()
-/*
+    /*
     def pattern = "-(\\d+)-g"
     def matcher =version=~pattern
     if (matcher){
@@ -21,8 +21,8 @@ def gitVersionTag(){
     } else {
         version=version+".0"
     }
+    */
     //logger.debug(version)
-*/
     println version+''
     return version
     //return 'v0.0.0' // is true when remote is v0.0.1
@@ -30,17 +30,19 @@ def gitVersionTag(){
     //return 'v0.0.0.9' //is true r v0.0.1
     //return 'v0.0.1' //is false r v0.0.1
 }
-def keystorePropertiesFile = rootProject.file("keystore.properties")
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties;
+def keyStoreFile;
 if (keystorePropertiesFile.exists()) {
 
     // Initialize a new Properties() object called keystoreProperties.
-    def keystoreProperties = new Properties()
+    keystoreProperties = new Properties()
 
 // Load your keystore.properties file into the keystoreProperties object.
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-    def keyStoreFile = file(keystoreProperties['storeFileLocal'])
+    keyStoreFile = file(keystoreProperties['storeFileLocal'])
 
 // 判断是位于本地还是CI服务器
     if (!keyStoreFile.exists()){
