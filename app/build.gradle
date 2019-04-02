@@ -13,6 +13,11 @@ def gitVersionTag(){
     //def cmd = 'git tag'
     def cmd = 'git describe --tags'
     def version =cmd.execute().text.trim()
+    def pattern =/-/
+    def matcher =version=~pattern
+    if (matcher){
+        version =version.substring(0,matcher.start())
+    }
     /*
     def pattern = "-(\\d+)-g"
     def matcher =version=~pattern
