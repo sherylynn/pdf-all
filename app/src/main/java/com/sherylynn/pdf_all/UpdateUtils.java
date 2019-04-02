@@ -11,17 +11,16 @@ import com.github.javiersantos.appupdater.objects.Update;
 
 public class UpdateUtils {
   //public static
-  /*
   public static void CheckUpdateGithub(Activity activity){
     new AppUpdater(activity)
-      .setDisplay(Display.DIALOG)
+            .setDisplay(Display.SNACKBAR)
+            .setDisplay(Display.DIALOG)
             .setDisplay(Display.NOTIFICATION)
       .setUpdateFrom(UpdateFrom.GITHUB)
       .setGitHubUserAndRepo("sherylynn","pdf-all")
       .start();
   }
-  */
-  public static void CheckUpdateGithub(Activity activity){
+  public static void CheckUpdateGithubBackground(Activity activity){
     AppUpdaterUtils appUpdaterUtils = new AppUpdaterUtils(activity)
             .setUpdateFrom(UpdateFrom.GITHUB)
             .setGitHubUserAndRepo("sherylynn","pdf-all")
