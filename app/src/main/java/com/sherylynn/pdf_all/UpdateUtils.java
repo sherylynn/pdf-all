@@ -13,9 +13,9 @@ public class UpdateUtils {
   //public static
   public static void CheckUpdateGithub(Activity activity){
     new AppUpdater(activity)
-            .setDisplay(Display.SNACKBAR)
+            //.setDisplay(Display.NOTIFICATION)
+            //.setDisplay(Display.SNACKBAR)
             .setDisplay(Display.DIALOG)
-            .setDisplay(Display.NOTIFICATION)
       .setUpdateFrom(UpdateFrom.GITHUB)
       .setGitHubUserAndRepo("sherylynn","pdf-all")
       .start();
