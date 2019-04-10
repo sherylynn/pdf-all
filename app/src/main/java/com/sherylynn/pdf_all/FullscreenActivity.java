@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,8 +21,10 @@ import android.util.Log;
  */
 public class FullscreenActivity extends AppCompatActivity {
     private Uri uri;
+    private int LastPage =1 ;
     private String TAG="MainActivity";
     private String filePath;
+    private String fileName = "test";
     private PDFView pdfView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,17 @@ public class FullscreenActivity extends AppCompatActivity {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
             setContentView(R.layout.activity_fullscreen);
             pdfView = (PDFView) findViewById(R.id.pdfView);
-            pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
+            pdfView
+                    .fromAsset(fileName+".pdf")
+                    .defaultPage(SPUtils.get(this,fileName,0))
+                    .onPageChange(new OnPageChangeListener() {
+                        @Override
+                        public void onPageChanged(int page, int pageCount) {
+                            LastPage=page;
+                            SPUtils.put(getApplicationContext(),fileName,LastPage);
+                        }
+                    })
+                    .load();//打开在assets文件夹里面的资源
         }
         Log.v("pdf-all-file", "最终："+"init完毕");
         // hide actionBar
@@ -46,10 +60,17 @@ public class FullscreenActivity extends AppCompatActivity {
             actionBar.hide();
         }
         UpdateUtils.CheckUpdateGithub(this);
-        SPUtils.put(this,"test",1);
-        Log.v("SPUtils-test",SPUtils.get(this,"test",0)+"");
+        //SPUtils.put(this,"test",1);
+        //Log.v("SPUtils-test",SPUtils.get(this,"test",0)+"");
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //#onDestroy don't listen on kill
+        //#maybe should try services
+        //SPUtils.put(this,fileName,LastPage);
     }
 }
