@@ -21,10 +21,11 @@ import android.util.Log;
  */
 public class FullscreenActivity extends AppCompatActivity {
     private Uri uri;
+    private String uriString;
     private int LastPage =1 ;
     private String TAG="MainActivity";
     private String filePath;
-    private String fileName = "test";
+    private String fileName = "test.pdf";
     private PDFView pdfView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +34,29 @@ public class FullscreenActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
-            Log.v("pdf-all-file", "有文件"+Uri.decode(uri.getEncodedPath()));
+            uriString = Uri.decode(uri.getEncodedPath());
+            fileName = uriString.substring(uriString.lastIndexOf("/")+1,uriString.length());
+            Log.v("pdf-all-file", "有文件："+uriString);
+            Log.v("pdf-all-file", "文件名："+fileName);
             setContentView(R.layout.activity_fullscreen);
             pdfView = (PDFView) findViewById(R.id.pdfView);
-            pdfView.fromUri(uri).load();
+            pdfView
+                    .fromUri(uri)
+                    .defaultPage(SPUtils.get(this,fileName,0))
+                    .onPageChange(new OnPageChangeListener() {
+                        @Override
+                        public void onPageChanged(int page, int pageCount) {
+                            LastPage=page;
+                            SPUtils.put(getApplicationContext(),fileName,LastPage);
+                        }
+                    })
+                    .load();
         }else {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
             setContentView(R.layout.activity_fullscreen);
             pdfView = (PDFView) findViewById(R.id.pdfView);
             pdfView
-                    .fromAsset(fileName+".pdf")
+                    .fromAsset(fileName)
                     .defaultPage(SPUtils.get(this,fileName,0))
                     .onPageChange(new OnPageChangeListener() {
                         @Override
