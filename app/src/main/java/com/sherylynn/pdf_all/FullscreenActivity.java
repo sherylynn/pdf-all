@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.UriUtils;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 
@@ -27,6 +30,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private String filePath;
     private String fileName = "test.pdf";
     private PDFView pdfView;
+    private String DocId=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +39,9 @@ public class FullscreenActivity extends AppCompatActivity {
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
             uriString = Uri.decode(uri.getEncodedPath());
+
+            //LogUtils.d("test");
+            syncPage();
             fileName = uriString.substring(uriString.lastIndexOf("/")+1,uriString.length());
             Log.v("pdf-all-file", "有文件："+uriString);
             Log.v("pdf-all-file", "文件名："+fileName);
@@ -54,6 +61,9 @@ public class FullscreenActivity extends AppCompatActivity {
         }else {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
             setContentView(R.layout.activity_fullscreen);
+            DocId=PDFUtils.DocId(this,fileName);
+            Log.v("pdf-all-file", "默认文件ID："+DocId);
+
             pdfView = (PDFView) findViewById(R.id.pdfView);
             pdfView
                     .fromAsset(fileName)
@@ -79,6 +89,15 @@ public class FullscreenActivity extends AppCompatActivity {
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
+    }
+    private void syncPage(){
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
+                Log.v("pdf-all-file", "文件ID："+DocId);
+            }
+        }).start();
     }
     @Override
     protected void onDestroy(){
