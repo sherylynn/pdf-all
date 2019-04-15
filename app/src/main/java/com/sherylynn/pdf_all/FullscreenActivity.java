@@ -98,6 +98,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 Log.v("pdf-all-file", "文件ID："+DocId);
             }
         }).start();
+        DialogUtils.create_test_dialog(this);
     }
     @Override
     protected void onDestroy(){
