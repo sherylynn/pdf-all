@@ -39,7 +39,8 @@ public class FullscreenActivity extends AppCompatActivity {
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
             uriString = Uri.decode(uri.getEncodedPath());
-
+            //set Last pdf uri
+            SPUtils.put(this,"LastPDFUriString",uri.toString());
             //LogUtils.d("test");
             syncPage();
             fileName = uriString.substring(uriString.lastIndexOf("/")+1,uriString.length());
@@ -63,20 +64,44 @@ public class FullscreenActivity extends AppCompatActivity {
             setContentView(R.layout.activity_fullscreen);
             DocId=PDFUtils.DocId(this,fileName);
             Log.v("pdf-all-file", "默认文件ID："+DocId);
+            String defaultLastPDFUriString = "self";
+            // init false
+            // because dialog is not immediate
+            // init false will be aways false
+            // so i configure it in dialog
+            //SPUtils.putSync(activity,"reopenClick",false);
+            String LastPDFUriString =SPUtils.get(this,"LastPDFUriString",defaultLastPDFUriString);
+            if(LastPDFUriString!=defaultLastPDFUriString){
+                DialogUtils.reopen(this);
+            }
             DialogUtils.signin(this);
-
-            pdfView = (PDFView) findViewById(R.id.pdfView);
-            pdfView
-                    .fromAsset(fileName)
-                    .defaultPage(SPUtils.get(this,fileName,0))
-                    .onPageChange(new OnPageChangeListener() {
-                        @Override
-                        public void onPageChanged(int page, int pageCount) {
-                            LastPage=page;
-                            SPUtils.put(getApplicationContext(),fileName,LastPage);
-                        }
-                    })
-                    .load();//打开在assets文件夹里面的资源
+            if(SPUtils.get(this,"reopenClick",false)!=false){
+                pdfView = (PDFView) findViewById(R.id.pdfView);
+                pdfView
+                        .fromUri(Uri.parse(LastPDFUriString))
+                        .defaultPage(SPUtils.get(this,fileName,0))
+                        .onPageChange(new OnPageChangeListener() {
+                            @Override
+                            public void onPageChanged(int page, int pageCount) {
+                                LastPage=page;
+                                SPUtils.put(getApplicationContext(),fileName,LastPage);
+                            }
+                        })
+                        .load();
+            }else{
+                pdfView = (PDFView) findViewById(R.id.pdfView);
+                pdfView
+                        .fromAsset(fileName)
+                        .defaultPage(SPUtils.get(this,fileName,0))
+                        .onPageChange(new OnPageChangeListener() {
+                            @Override
+                            public void onPageChanged(int page, int pageCount) {
+                                LastPage=page;
+                                SPUtils.put(getApplicationContext(),fileName,LastPage);
+                            }
+                        })
+                        .load();//打开在assets文件夹里面的资源
+            }
         }
         Log.v("pdf-all-file", "最终："+"init完毕");
         // hide actionBar
