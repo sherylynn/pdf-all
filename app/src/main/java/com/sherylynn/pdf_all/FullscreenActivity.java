@@ -63,6 +63,7 @@ public class FullscreenActivity extends AppCompatActivity {
             setContentView(R.layout.activity_fullscreen);
             DocId=PDFUtils.DocId(this,fileName);
             Log.v("pdf-all-file", "默认文件ID："+DocId);
+            DialogUtils.signin(this);
 
             pdfView = (PDFView) findViewById(R.id.pdfView);
             pdfView

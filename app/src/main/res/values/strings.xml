@@ -3,4 +3,9 @@
 
     <string name="dialog_test_message">test_message</string>
     <string name="dialog_test_title">test_title</string>
+
+    <string name="signin">Sign In</string>
+    <string name="cancel">Cancel</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 </resources>
