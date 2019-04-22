@@ -5,8 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import com.blankj.utilcode.util.LogUtils;
+
+import java.util.zip.Inflater;
 
 public class DialogUtils {
     public static void create_test_dialog(Context context){
@@ -42,10 +46,13 @@ public class DialogUtils {
     public static void signin(final Activity activity){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.dialog_signin,null))
+        final View dialogView = inflater.inflate(R.layout.dialog_signin,null);
+        builder.setView(dialogView)
                 .setPositiveButton(R.string.signin, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        EditText url_text = (EditText) dialogView.findViewById(R.id.url);
+                        LogUtils.v(url_text.getText().toString());
                         //sign in the user
                     }
                 })

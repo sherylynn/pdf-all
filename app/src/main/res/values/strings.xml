@@ -6,6 +6,7 @@
 
     <string name="signin">Sign In</string>
     <string name="cancel">Cancel</string>
+    <string name="url">Server-Url</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
 
