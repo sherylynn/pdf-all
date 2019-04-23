@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.github.barteksc.pdfviewer.PDFView;
@@ -18,6 +19,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+
+import java.io.IOException;
+import com.alibaba.fastjson.JSONObject;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -25,7 +34,8 @@ import android.util.Log;
 public class FullscreenActivity extends AppCompatActivity {
     private Uri uri;
     private String uriString;
-    private int LastPage =1 ;
+    private static int LastPage =1 ;
+    private static int CurrentPage =0 ;
     private String TAG="MainActivity";
     private String filePath;
     private String fileName = "test.pdf";
@@ -125,6 +135,48 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         }).start();
         DialogUtils.create_test_dialog(this);
+    }
+    private void getLastPages(String DocId){
+        final String url=origin + "/get_latest_progress?username=" + username + "&identifier=" + docId ;
+        Log.d(TAG, "getLastPages: url:"+url);
+        HttpUtils.sendOkHttpRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "onFailure get: Filed");
+                CurrentPage=LastPage=0;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPdf(LastPage);
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string();
+                String page_num=null;
+                try{
+                    JSONObject jsonObject=JSONObject.parseObject(responseText);
+                    page_num=jsonObject.getString("page_num");
+                    LastPage=Integer.valueOf(page_num);
+                    CurrentPage=LastPage;
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onResponse get: "+responseText);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: lastLage:"+LastPage);
+                        loadPdf(LastPage);
+                    }
+                });
+            }
+
+        });
     }
     @Override
     protected void onDestroy(){

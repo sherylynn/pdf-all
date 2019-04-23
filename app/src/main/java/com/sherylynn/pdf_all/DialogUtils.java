@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.LogUtils;
 
@@ -51,8 +52,14 @@ public class DialogUtils {
                 .setPositiveButton(R.string.signin, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        EditText url_text = (EditText) dialogView.findViewById(R.id.url);
-                        LogUtils.v(url_text.getText().toString());
+                        EditText url= (EditText) dialogView.findViewById(R.id.url);
+                        EditText username = (EditText) dialogView.findViewById(R.id.username);
+                        EditText password= (EditText) dialogView.findViewById(R.id.username);
+                        SPUtils.put(activity,"url",url.getText().toString());
+                        SPUtils.put(activity,"username",username.getText().toString());
+                        SPUtils.put(activity,"password",password.getText().toString());
+                        //notification
+                        Toast.makeText(activity,"signed!",Toast.LENGTH_SHORT).show();
                         //sign in the user
                     }
                 })
