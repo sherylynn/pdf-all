@@ -38,6 +38,9 @@ public class FullscreenActivity extends AppCompatActivity {
     private static int CurrentPage =0 ;
     private String TAG="MainActivity";
     private String filePath;
+    private String origin;
+    private String username;
+    private String password;
     private String fileName = "test.pdf";
     private PDFView pdfView;
     private String DocId=null;
@@ -84,7 +87,13 @@ public class FullscreenActivity extends AppCompatActivity {
             if(LastPDFUriString!=defaultLastPDFUriString){
                 DialogUtils.reopen(this);
             }
-            DialogUtils.signin(this);
+
+            //if not signed show sign in dialog
+            if(SPUtils.get(this,"url","blank")=="blank"){
+                DialogUtils.signin(this);
+                origin=SPUtils.get(this,"url","black");
+                username=SPUtils.get(this,"username","black");
+            }
             if(SPUtils.get(this,"reopenClick",false)!=false){
                 pdfView = (PDFView) findViewById(R.id.pdfView);
                 pdfView
@@ -137,7 +146,7 @@ public class FullscreenActivity extends AppCompatActivity {
         DialogUtils.create_test_dialog(this);
     }
     private void getLastPages(String DocId){
-        final String url=origin + "/get_latest_progress?username=" + username + "&identifier=" + docId ;
+        final String url=origin + "/get_latest_progress?username=" + username + "&identifier=" + DocId ;
         Log.d(TAG, "getLastPages: url:"+url);
         HttpUtils.sendOkHttpRequest(url, new Callback() {
             @Override

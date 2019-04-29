@@ -55,9 +55,9 @@ public class DialogUtils {
                         EditText url= (EditText) dialogView.findViewById(R.id.url);
                         EditText username = (EditText) dialogView.findViewById(R.id.username);
                         EditText password= (EditText) dialogView.findViewById(R.id.username);
-                        SPUtils.put(activity,"url",url.getText().toString());
-                        SPUtils.put(activity,"username",username.getText().toString());
-                        SPUtils.put(activity,"password",password.getText().toString());
+                        SPUtils.putSync(activity,"url",url.getText().toString());
+                        SPUtils.putSync(activity,"username",username.getText().toString());
+                        SPUtils.putSync(activity,"password",password.getText().toString());
                         //notification
                         Toast.makeText(activity,"signed!",Toast.LENGTH_SHORT).show();
                         //sign in the user

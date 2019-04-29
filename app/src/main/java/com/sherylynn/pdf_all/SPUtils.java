@@ -17,6 +17,12 @@ public class SPUtils {
         //editor.commit();
         editor.apply();
     }
+    public static void putSync(Context context, String name, String value){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = sharedPref.edit();
+        editor.putString(name,value);
+        editor.commit();
+    }
     public static void putSync(Context context,String name,boolean value){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
