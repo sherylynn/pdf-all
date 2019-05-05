@@ -69,6 +69,10 @@ if (keystorePropertiesFile.exists()) {
             }
         }
         compileSdkVersion 28
+        compileOptions {
+            targetCompatibility = "8"
+            sourceCompatibility = "8"
+        }
         defaultConfig {
             applicationId "com.sherylynn.pdf_all"
             minSdkVersion 15

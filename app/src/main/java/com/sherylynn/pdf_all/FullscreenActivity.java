@@ -1,6 +1,9 @@
 package com.sherylynn.pdf_all;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +40,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private static int LastPage =1 ;
     private static int CurrentPage =0 ;
     private String TAG="MainActivity";
+    private static final int UPDATE_PAGES_TIME=29000;
+    private UpdateTask updateTask=null;
     private String filePath;
     private String origin;
     private String username;
@@ -55,23 +60,18 @@ public class FullscreenActivity extends AppCompatActivity {
             //set Last pdf uri
             SPUtils.put(this,"LastPDFUriString",uri.toString());
             //LogUtils.d("test");
-            syncPage();
             fileName = uriString.substring(uriString.lastIndexOf("/")+1,uriString.length());
             Log.v("pdf-all-file", "有文件："+uriString);
             Log.v("pdf-all-file", "文件名："+fileName);
             setContentView(R.layout.activity_fullscreen);
-            pdfView = (PDFView) findViewById(R.id.pdfView);
-            pdfView
-                    .fromUri(uri)
-                    .defaultPage(SPUtils.get(this,fileName,0))
-                    .onPageChange(new OnPageChangeListener() {
-                        @Override
-                        public void onPageChanged(int page, int pageCount) {
-                            LastPage=page;
-                            SPUtils.put(getApplicationContext(),fileName,LastPage);
-                        }
-                    })
-                    .load();
+            if(SPUtils.get(this,"url","blank")=="blank"){
+                DialogUtils.signin(this);
+            }
+            origin=SPUtils.get(this,"url","black");
+            username=SPUtils.get(this,"username","black");
+            //for test
+            syncPage();
+            //loadPdf(1);
         }else {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
             setContentView(R.layout.activity_fullscreen);
@@ -91,9 +91,9 @@ public class FullscreenActivity extends AppCompatActivity {
             //if not signed show sign in dialog
             if(SPUtils.get(this,"url","blank")=="blank"){
                 DialogUtils.signin(this);
-                origin=SPUtils.get(this,"url","black");
-                username=SPUtils.get(this,"username","black");
             }
+            origin=SPUtils.get(this,"url","black");
+            username=SPUtils.get(this,"username","black");
             if(SPUtils.get(this,"reopenClick",false)!=false){
                 pdfView = (PDFView) findViewById(R.id.pdfView);
                 pdfView
@@ -143,7 +143,91 @@ public class FullscreenActivity extends AppCompatActivity {
                 Log.v("pdf-all-file", "文件ID："+DocId);
             }
         }).start();
+        getLastPages(DocId);
         DialogUtils.create_test_dialog(this);
+    }
+    private void loadPdf(int lastPage){
+        pdfView = (PDFView) findViewById(R.id.pdfView);
+        pdfView
+                .fromUri(uri)
+                //.defaultPage(SPUtils.get(this,fileName,0))
+                .defaultPage(lastPage)
+                .onPageChange(new OnPageChangeListener() {
+                    @Override
+                    public void onPageChanged(int page, int pageCount) {
+                        CurrentPage=page;
+                        SPUtils.put(getApplicationContext(),fileName,CurrentPage);
+                    }
+                })
+                .load();
+        //导致了闪退
+        //startUpdateTask();
+    }
+    private void closeUpdateTask(){
+        try {
+            if(updateTask!=null) {
+                updateTask.cancel(true);
+                updateTask = null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void startUpdateTask(){
+        try {
+            if (uriString != null && updateTask == null && LastPage!=-1) {
+                updateTask = new UpdateTask();
+                updateTask.execute();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public class UpdateTask extends AsyncTask<String, Object, Integer> {
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected Integer doInBackground(String... strings) {
+
+            while (true){
+                if(isCancelled()) return null;
+                if(LastPage!=CurrentPage) {
+                    LastPage=CurrentPage;
+                    updatePages(LastPage);
+                }
+                try{
+                    Thread.sleep(UPDATE_PAGES_TIME);
+                    publishProgress();
+                    Thread.sleep(1000);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        @Override
+        protected void onPostExecute(Integer result) {
+
+        }
+        private void updatePages(int pageNum){
+            String url=origin + "/update_progress?username=" + username + "&identifier=" + DocId + "&page_num=" + pageNum;
+            Log.d(TAG, "updatePages: url:"+url);
+            HttpUtils.sendOkHttpRequest(url, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d(TAG, "onFailure: Filed");
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    final String responseText = response.body().string();
+                    Log.d(TAG, "onResponse: "+responseText);
+
+                }
+            });
+        }
+
     }
     private void getLastPages(String DocId){
         final String url=origin + "/get_latest_progress?username=" + username + "&identifier=" + DocId ;
@@ -175,11 +259,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                Log.d(TAG, "onResponse get: "+responseText);
+                LogUtils.d("from server"+responseText);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: lastLage:"+LastPage);
+                        LogUtils.d(LastPage);
                         loadPdf(LastPage);
                     }
                 });
