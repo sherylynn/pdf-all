@@ -54,6 +54,7 @@ public class FullscreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         PermissionUtils.verifyStoragePermissions(this);
         Intent intent = getIntent();
+        //直接打开
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
             uriString = Uri.decode(uri.getEncodedPath());
@@ -141,9 +142,11 @@ public class FullscreenActivity extends AppCompatActivity {
             public void run(){
                 DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
                 Log.v("pdf-all-file", "文件ID："+DocId);
+                getLastPages(DocId);
             }
         }).start();
-        getLastPages(DocId);
+        //这里有一个阻塞，可能影响加载速度，因为androidpdf插件的加载是开头就指定了defaultpage的，没法后期调用
+        //getLastPages(DocId);
         DialogUtils.create_test_dialog(this);
     }
     private void loadPdf(int lastPage){
@@ -160,6 +163,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     }
                 })
                 .load();
+        startUpdateTask();
         //导致了闪退
         //startUpdateTask();
     }
@@ -191,6 +195,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
             while (true){
                 if(isCancelled()) return null;
+                LogUtils.v("执行了推送");
                 if(LastPage!=CurrentPage) {
                     LastPage=CurrentPage;
                     updatePages(LastPage);
@@ -211,7 +216,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
         private void updatePages(int pageNum){
             String url=origin + "/update_progress?username=" + username + "&identifier=" + DocId + "&page_num=" + pageNum;
-            Log.d(TAG, "updatePages: url:"+url);
+            LogUtils.v("推送地址"+url);
             HttpUtils.sendOkHttpRequest(url, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -222,14 +227,14 @@ public class FullscreenActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     final String responseText = response.body().string();
-                    Log.d(TAG, "onResponse: "+responseText);
-
+                    LogUtils.v("同步进度回馈"+responseText);
                 }
             });
         }
 
     }
     private void getLastPages(String DocId){
+        LogUtils.v("getLastPages中使用的文件ID"+DocId);
         final String url=origin + "/get_latest_progress?username=" + username + "&identifier=" + DocId ;
         Log.d(TAG, "getLastPages: url:"+url);
         HttpUtils.sendOkHttpRequest(url, new Callback() {
