@@ -71,6 +71,19 @@ public class FullscreenActivity extends AppCompatActivity {
             origin=SPUtils.get(this,"url","black");
             username=SPUtils.get(this,"username","black");
             //for test
+            pdfView = (PDFView) findViewById(R.id.pdfView);
+            pdfView
+                    .fromUri(uri)
+                    .defaultPage(SPUtils.get(this,fileName,0))
+                    .onPageChange(new OnPageChangeListener() {
+                        @Override
+                        public void onPageChanged(int page, int pageCount) {
+                            CurrentPage=page;
+                            SPUtils.put(getApplicationContext(),fileName,LastPage);
+                        }
+                    })
+                    .load();
+            //pdfView.jumpTo(11);
             syncPage();
             //loadPdf(1);
         }else {
@@ -151,18 +164,7 @@ public class FullscreenActivity extends AppCompatActivity {
     }
     private void loadPdf(int lastPage){
         pdfView = (PDFView) findViewById(R.id.pdfView);
-        pdfView
-                .fromUri(uri)
-                //.defaultPage(SPUtils.get(this,fileName,0))
-                .defaultPage(lastPage)
-                .onPageChange(new OnPageChangeListener() {
-                    @Override
-                    public void onPageChanged(int page, int pageCount) {
-                        CurrentPage=page;
-                        SPUtils.put(getApplicationContext(),fileName,CurrentPage);
-                    }
-                })
-                .load();
+        pdfView.jumpTo(lastPage,true);
         startUpdateTask();
         //导致了闪退
         //startUpdateTask();
