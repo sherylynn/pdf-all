@@ -19,7 +19,7 @@ public class PDFUtils {
         try{
             InputStream stream = assetManager.open(fileName);
             byte[] bs=new byte[1024];
-            while (stream.read(bs)!=-1){
+            while (stream.read(bs) > 0){
                 res=find(bs);
                 if(res!=null)return res;
             }
