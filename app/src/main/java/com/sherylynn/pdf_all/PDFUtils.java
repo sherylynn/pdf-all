@@ -34,7 +34,7 @@ public class PDFUtils {
         try{
             FileInputStream stream=new FileInputStream(pdfFile);
             byte[] bs=new byte[1024];
-            while (stream.read(bs)!=-1){
+            while (stream.read(bs)>0){
                 res=find(bs);
                 if(res!=null)return res;
             }
