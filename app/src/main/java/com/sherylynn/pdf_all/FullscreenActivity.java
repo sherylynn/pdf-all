@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 
+import java.io.File;
 import java.io.IOException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -40,7 +41,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private static int LastPage =1 ;
     private static int CurrentPage =0 ;
     private String TAG="MainActivity";
-    private static final int UPDATE_PAGES_TIME=29000;
+    private static final int UPDATE_PAGES_TIME=9000;
     private UpdateTask updateTask=null;
     private String filePath;
     private String origin;
@@ -154,6 +155,11 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void run(){
                 DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
+                File Uri2File = UriUtils.uri2File(uri);
+                Log.v("file-test","fuck"+Uri2File.getPath());
+                //Log.v("上一层获取的uri是否有误？","fuck"+);
+                Log.v("上一层获取的uri是否有误？","fuckAll"+uri.toString());
+                //Log.v("uri无误，uriutils是否有错？","fuckAgain"+UriUtils.uri2File(uri).getPath());
                 Log.v("pdf-all-file", "文件ID："+DocId);
                 getLastPages(DocId);
             }
