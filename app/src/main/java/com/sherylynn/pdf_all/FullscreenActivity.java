@@ -1,6 +1,7 @@
 package com.sherylynn.pdf_all;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -85,7 +86,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     })
                     .load();
             //pdfView.jumpTo(11);
-            syncPage();
+            syncPage(this);
             //loadPdf(1);
         }else {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
@@ -150,13 +151,14 @@ public class FullscreenActivity extends AppCompatActivity {
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
     }
-    private void syncPage(){
+    private void syncPage(Activity activity){
         new Thread(new Runnable(){
             @Override
             public void run(){
-                DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
-                File Uri2File = UriUtils.uri2File(uri);
-                Log.v("file-test","fuck"+Uri2File.getPath());
+                //DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
+                DocId=PDFUtils.GetDocID(uri,activity);
+                //File Uri2File = UriUtils.uri2File(uri);
+                //Log.v("file-test","fuck"+Uri2File.getPath());
                 //Log.v("上一层获取的uri是否有误？","fuck"+);
                 Log.v("上一层获取的uri是否有误？","fuckAll"+uri.toString());
                 //Log.v("uri无误，uriutils是否有错？","fuckAgain"+UriUtils.uri2File(uri).getPath());

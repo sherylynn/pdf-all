@@ -2,9 +2,11 @@ package com.sherylynn.pdf_all;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.net.Uri;
 
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.UriUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +31,20 @@ public class PDFUtils {
         }
         return res;
     }
+    public static String GetDocID(Uri uri,Context context){
+        if (uri==null){
+           return null;
+        }
+        switch (uri.getScheme()){
+            case "content":
+                return DocId(URIUtils.Uri2File(uri,context));
+            case "file":
+                return DocId(UriUtils.uri2File(uri));
+            default:
+                return null;
+        }
+    }
+    //android 7 don't support file://
     public static String DocId(File pdfFile){
         String res=null;
         try{
