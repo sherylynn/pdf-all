@@ -252,7 +252,9 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.d(TAG, "onFailure get: Filed");
+                Log.v(TAG, "onFailure get: Filed");
+                LogUtils.v("文件同步错误："+e);
+                /*同步出错就不跳转进度了
                 CurrentPage=LastPage=0;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -260,6 +262,7 @@ public class FullscreenActivity extends AppCompatActivity {
                         loadPdf(LastPage);
                     }
                 });
+                */
             }
 
             @Override
