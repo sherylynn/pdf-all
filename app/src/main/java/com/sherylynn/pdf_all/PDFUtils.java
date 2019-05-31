@@ -44,6 +44,23 @@ public class PDFUtils {
                 return null;
         }
     }
+    public static String DocId(Uri uri,Context context){
+        String res = null;
+        InputStream UriInputStream;
+        if (uri.getAuthority() != null) {
+            try {
+                UriInputStream = context.getContentResolver().openInputStream(uri);
+                byte[] bs=new byte[1024];
+                while (UriInputStream.read(bs)>0){
+                    res=find(bs);
+                    if(res!=null)return res;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return res;
+    }
     //android 7 don't support file://
     public static String DocId(File pdfFile){
         String res=null;

@@ -156,7 +156,8 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void run(){
                 //DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
-                DocId=PDFUtils.GetDocID(uri,activity);
+                //DocId=PDFUtils.GetDocID(uri,activity);
+                DocId=PDFUtils.DocId(uri,activity);
                 //File Uri2File = UriUtils.uri2File(uri);
                 //Log.v("file-test","fuck"+Uri2File.getPath());
                 //Log.v("上一层获取的uri是否有误？","fuck"+);
@@ -274,11 +275,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                LogUtils.d("from server"+responseText);
+                LogUtils.v("from server"+responseText);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        LogUtils.d(LastPage);
+                        LogUtils.v(LastPage);
                         loadPdf(LastPage);
                     }
                 });
