@@ -209,7 +209,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if(isCancelled()) return null;
                 LogUtils.v("执行了推送");
                 //Toast.makeText(this,"开始推送",Toast.LENGTH_SHORT).show();
-                if(LastPage!=CurrentPage) {
+                if(LastPage<CurrentPage) {
                     LastPage=CurrentPage;
                     //本地记录
                     SPUtils.put(getApplicationContext(),fileName,LastPage);
