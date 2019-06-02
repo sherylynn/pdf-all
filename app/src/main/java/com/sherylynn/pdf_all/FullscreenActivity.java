@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -207,8 +208,12 @@ public class FullscreenActivity extends AppCompatActivity {
             while (true){
                 if(isCancelled()) return null;
                 LogUtils.v("执行了推送");
+                //Toast.makeText(this,"开始推送",Toast.LENGTH_SHORT).show();
                 if(LastPage!=CurrentPage) {
                     LastPage=CurrentPage;
+                    //本地记录
+                    SPUtils.put(getApplicationContext(),fileName,LastPage);
+                    //推送进度
                     updatePages(LastPage);
                 }
                 try{
@@ -228,17 +233,18 @@ public class FullscreenActivity extends AppCompatActivity {
         private void updatePages(int pageNum){
             String url=origin + "/update_progress?username=" + username + "&identifier=" + DocId + "&page_num=" + pageNum;
             LogUtils.v("推送地址"+url);
+            LogUtils.v("推送id"+DocId);
             HttpUtils.sendOkHttpRequest(url, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.d(TAG, "onFailure: Filed");
+                    LogUtils.v("推送进度失败"+e);
 
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     final String responseText = response.body().string();
-                    LogUtils.v("同步进度回馈"+responseText);
+                    LogUtils.v("推送进度回馈"+responseText);
                 }
             });
         }
@@ -252,7 +258,6 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.v(TAG, "onFailure get: Filed");
                 LogUtils.v("文件同步错误："+e);
                 /*同步出错就不跳转进度了
                 CurrentPage=LastPage=0;
