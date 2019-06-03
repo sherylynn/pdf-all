@@ -51,6 +51,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private String password;
     private String fileName = "test.pdf";
     private PDFView pdfView;
+
+    //private static String DocId=null;
     private String DocId=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

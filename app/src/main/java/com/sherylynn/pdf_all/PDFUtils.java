@@ -84,6 +84,7 @@ public class PDFUtils {
             //String string_pattern = "DocumentID>uuid:(\\w{8}(-\\w{4}){3}-\\w{12}?)<";
             String string_pattern1 = "R/ID\\[<([0-9]+)";
             String string_pattern2 = "FlateDecode/ID\\[<([0-9A-Z]+)";
+            //String string_pattern2 = "FlateDecode/ID\\[<([0-9A-Z]+)><([0-9A-Z]+)";
 
             Pattern pattern1 =Pattern.compile(string_pattern1);
             Pattern pattern2 =Pattern.compile(string_pattern2);
@@ -96,7 +97,9 @@ public class PDFUtils {
                 res =m1.group(1);
             }else if(m2.find()){
                 LogUtils.v("find后文件ID"+m2.group(1));
+                //LogUtils.v("find后文件ID"+m2.group(1)+m2.group(2));
                 res =m2.group(1);
+                //res =m2.group(1)+m2.group(2);
                 //LogUtils.v("not find 文件ID");
             }
             //res="find中强行设置"+string_context;
