@@ -160,7 +160,8 @@ public class FullscreenActivity extends AppCompatActivity {
             public void run(){
                 //DocId=PDFUtils.DocId(UriUtils.uri2File(uri));
                 //DocId=PDFUtils.GetDocID(uri,activity);
-                DocId=PDFUtils.DocId(uri,activity);
+                //DocId=PDFUtils.DocId(uri,activity);
+                DocId=PDFUtils.DocId(fileName);
                 //File Uri2File = UriUtils.uri2File(uri);
                 //Log.v("file-test","fuck"+Uri2File.getPath());
                 //Log.v("上一层获取的uri是否有误？","fuck"+);

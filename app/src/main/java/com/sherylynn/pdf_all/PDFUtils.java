@@ -44,6 +44,10 @@ public class PDFUtils {
                 return null;
         }
     }
+    public static String DocId(String fileName){
+        return findFileName(fileName);
+    }
+    //android 7 way to get id
     public static String DocId(Uri uri,Context context){
         String res = null;
         InputStream UriInputStream;
@@ -62,6 +66,7 @@ public class PDFUtils {
         return res;
     }
     //android 7 don't support file://
+    //get by file
     public static String DocId(File pdfFile){
         String res=null;
         try{
@@ -99,6 +104,31 @@ public class PDFUtils {
                 LogUtils.v("find后文件ID"+m2.group(1));
                 //LogUtils.v("find后文件ID"+m2.group(1)+m2.group(2));
                 res =m2.group(1);
+                //res =m2.group(1)+m2.group(2);
+                //LogUtils.v("not find 文件ID");
+            }
+            //res="find中强行设置"+string_context;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+    private static String findFileName(String fileName){
+        String res=null;
+        try {
+            String string_context = fileName;
+            String string_pattern1 = "《(.*)》";
+            Pattern pattern1 =Pattern.compile(string_pattern1);
+
+            Matcher m1 = pattern1.matcher(string_context);
+            //LogUtils.v("待查文件ID"+string_context);
+            if (m1.find()){
+                LogUtils.v("find后文件名"+m1.group(1));
+                res =m1.group(1);
+            }else{
+                LogUtils.v("find后文件名"+fileName);
+                //LogUtils.v("find后文件ID"+m2.group(1)+m2.group(2));
+                res =fileName;
                 //res =m2.group(1)+m2.group(2);
                 //LogUtils.v("not find 文件ID");
             }
