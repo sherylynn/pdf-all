@@ -53,7 +53,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private PDFView pdfView;
 
     //private static String DocId=null;
-    private String DocId=null;
+    private static String DocId=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

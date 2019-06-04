@@ -45,7 +45,9 @@ public class PDFUtils {
         }
     }
     public static String DocId(String fileName){
-        return findFileName(fileName);
+        String realFileName = findFileName(fileName);
+        return cnToUnicode(realFileName);
+
     }
     //android 7 way to get id
     public static String DocId(Uri uri,Context context){
@@ -137,5 +139,13 @@ public class PDFUtils {
             e.printStackTrace();
         }
         return res;
+    }
+    private static String cnToUnicode(String cn) {
+        char[] chars = cn.toCharArray();
+        String returnStr = "";
+        for (int i = 0; i < chars.length; i++) {
+            returnStr += "\\u" + Integer.toString(chars[i], 16);
+        }
+        return returnStr;
     }
 }
