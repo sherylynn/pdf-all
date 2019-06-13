@@ -147,7 +147,8 @@ public class FullscreenActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        UpdateUtils.CheckUpdateGithub(this);
+        //UpdateUtils.CheckUpdateGithub(this);
+        UpdateUtils.CheckUpdateGithubBackground(this);
         //SPUtils.put(this,"test",1);
         //Log.v("SPUtils-test",SPUtils.get(this,"test",0)+"");
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
@@ -212,7 +213,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if(isCancelled()) return null;
                 LogUtils.v("执行了推送");
                 //Toast.makeText(this,"开始推送",Toast.LENGTH_SHORT).show();
-                if(LastPage<CurrentPage) {
+                if(LastPage!=CurrentPage) {
                     LastPage=CurrentPage;
                     //本地记录
                     SPUtils.put(getApplicationContext(),fileName,LastPage);
