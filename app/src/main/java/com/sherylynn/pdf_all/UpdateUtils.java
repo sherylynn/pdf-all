@@ -30,16 +30,19 @@ public class UpdateUtils {
             .withListener(new AppUpdaterUtils.UpdateListener() {
               @Override
               public void onSuccess(Update update, Boolean isUpdateAvailable) {
-                  String ApkUrl="https://github.com/"+user+"/"+repo+"/releases/download/v0.0.3.1/app-release.apk";
+                  String ApkUrl="https://github.com/"+user+"/"+repo+"/releases/download/v"+update.getLatestVersion()+"/app-release.apk";
                   LogUtils.v("最新版本"+update.getLatestVersion());
                   LogUtils.v("最新版本地址"+update.getUrlToDownload());
                   LogUtils.v("最新版本下载地址"+ApkUrl);
-                  ApklUtils.DownloadApk(activity,ApkUrl);
-                Log.v("Lastest Version",update.getLatestVersion());
+                  LogUtils.v("最新版本是否可以更新"+Boolean.toString(isUpdateAvailable));
+                  if(isUpdateAvailable){
+                      ApklUtils.DownloadApk(activity,ApkUrl);
+                  }
+                //Log.v("Lastest Version",update.getLatestVersion());
                 //Log.v("Release notes", update.getReleaseNotes()); //github no this method
                 //Log.v("URL", update.getUrlToDownload()+"");
 
-                Log.v("Is update available?", Boolean.toString(isUpdateAvailable));
+                //Log.v("Is update available?", Boolean.toString(isUpdateAvailable));
               }
 
               @Override
