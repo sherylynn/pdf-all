@@ -84,6 +84,8 @@ public class FullscreenActivity extends AppCompatActivity {
                         @Override
                         public void onPageChanged(int page, int pageCount) {
                             CurrentPage=page;
+                            //需要注意页面
+                            //到底存currentpage还是lastpage
                             SPUtils.put(getApplicationContext(),fileName,LastPage);
                         }
                     })
@@ -213,7 +215,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if(isCancelled()) return null;
                 LogUtils.v("执行了推送");
                 //Toast.makeText(this,"开始推送",Toast.LENGTH_SHORT).show();
-                if(LastPage!=CurrentPage && LastPage!=0 && CurrentPage !=0) {
+                if(LastPage!=CurrentPage && CurrentPage !=0) { // 这里lastpage可以是0.意思是服务器上进度为0
                     LastPage=CurrentPage;
                     //本地记录
                     SPUtils.put(getApplicationContext(),fileName,LastPage);
