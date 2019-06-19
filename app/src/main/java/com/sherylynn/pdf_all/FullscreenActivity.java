@@ -87,6 +87,7 @@ public class FullscreenActivity extends AppCompatActivity {
                             //需要注意页面
                             //到底存currentpage还是lastpage
                             SPUtils.put(getApplicationContext(),fileName,LastPage);
+                            Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
                         }
                     })
                     .load();
@@ -138,6 +139,8 @@ public class FullscreenActivity extends AppCompatActivity {
                             public void onPageChanged(int page, int pageCount) {
                                 LastPage=page;
                                 SPUtils.put(getApplicationContext(),fileName,LastPage);
+                                //Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
+                                //setTitle(String.format("%s %s /%s",fileName,page+1,pageCount));
                             }
                         })
                         .load();//打开在assets文件夹里面的资源
