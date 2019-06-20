@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                             //需要注意页面
                             //到底存currentpage还是lastpage
                             SPUtils.put(getApplicationContext(),fileName,LastPage);
-                            Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
                             if(fileName.length()>=12){
                                 showName = fileName.substring(0,12)+"... ";
                             }else{
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onPageChanged(int page, int pageCount) {
                                 LastPage=page;
                                 SPUtils.put(getApplicationContext(),fileName,LastPage);
+                                setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
                         .load();
