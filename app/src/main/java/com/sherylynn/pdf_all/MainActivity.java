@@ -1,31 +1,24 @@
 package com.sherylynn.pdf_all;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.UriUtils;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 
-import java.io.File;
 import java.io.IOException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -37,7 +30,7 @@ import okhttp3.Response;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private Uri uri;
     private String uriString;
     private static int LastPage =1 ;
@@ -50,6 +43,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private String username;
     private String password;
     private String fileName = "test.pdf";
+    private String showName = "";
     private PDFView pdfView;
 
     //private static String DocId=null;
@@ -69,7 +63,7 @@ public class FullscreenActivity extends AppCompatActivity {
             fileName = uriString.substring(uriString.lastIndexOf("/")+1,uriString.length());
             Log.v("pdf-all-file", "有文件："+uriString);
             Log.v("pdf-all-file", "文件名："+fileName);
-            setContentView(R.layout.activity_fullscreen);
+            setContentView(R.layout.activity_main);
             if(SPUtils.get(this,"url","blank")=="blank"){
                 DialogUtils.signin(this);
             }
@@ -88,6 +82,12 @@ public class FullscreenActivity extends AppCompatActivity {
                             //到底存currentpage还是lastpage
                             SPUtils.put(getApplicationContext(),fileName,LastPage);
                             Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
+                            if(fileName.length()>=12){
+                                showName = fileName.substring(0,12)+"... ";
+                            }else{
+                                showName = fileName;
+                            }
+                            setTitle(String.format("%s %s /%s",showName,page+1,pageCount));
                         }
                     })
                     .load();
@@ -96,7 +96,7 @@ public class FullscreenActivity extends AppCompatActivity {
             //loadPdf(1);
         }else {
             Log.v("pdf-all-file", "无文件或action不对应"+"test.pdf");
-            setContentView(R.layout.activity_fullscreen);
+            setContentView(R.layout.activity_main);
             DocId=PDFUtils.DocId(this,fileName);
             Log.v("pdf-all-file", "默认文件ID："+DocId);
             String defaultLastPDFUriString = "self";
@@ -140,7 +140,8 @@ public class FullscreenActivity extends AppCompatActivity {
                                 LastPage=page;
                                 SPUtils.put(getApplicationContext(),fileName,LastPage);
                                 //Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
-                                //setTitle(String.format("%s %s /%s",fileName,page+1,pageCount));
+
+                                setTitle(String.format("%s %s /%s",fileName,page+1,pageCount));
                             }
                         })
                         .load();//打开在assets文件夹里面的资源
@@ -148,10 +149,13 @@ public class FullscreenActivity extends AppCompatActivity {
         }
         Log.v("pdf-all-file", "最终："+"init完毕");
         // hide actionBar
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         //UpdateUtils.CheckUpdateGithub(this);
         UpdateUtils.CheckUpdateGithubBackground(this);
         //SPUtils.put(this,"test",1);
