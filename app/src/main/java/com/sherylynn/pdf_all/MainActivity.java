@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.SearchView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private String uriString;
     private static int LastPage =1 ;
     private static int CurrentPage =0 ;
+    private int PageCount;
     private String TAG="MainActivity";
     private static final int UPDATE_PAGES_TIME=9000;
     private UpdateTask updateTask=null;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private String fileName = "test.pdf";
     private String showName = "";
     private PDFView pdfView;
+
 
     //private static String DocId=null;
     private static String DocId=null;
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onPageChanged(int page, int pageCount) {
                             CurrentPage=page;
+                            PageCount=pageCount;
                             //需要注意页面
                             //到底存currentpage还是lastpage
                             SPUtils.put(getApplicationContext(),fileName,LastPage);
@@ -87,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                             }else{
                                 showName = fileName;
                             }
-                            setTitle(String.format("%s %s /%s",showName,page+1,pageCount));
+                            setTitle(String.format("%s %s /%s",showName,page,pageCount));
+                            //setSubtitle
                         }
                     })
                     .load();
@@ -141,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                 SPUtils.put(getApplicationContext(),fileName,LastPage);
                                 //Toast.makeText(getApplicationContext(), page + " / " + pageCount, Toast.LENGTH_SHORT).show();
 
-                                setTitle(String.format("%s %s /%s",fileName,page+1,pageCount));
+                                setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
                         .load();//打开在assets文件夹里面的资源
@@ -155,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.hide();
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.toolbar_search_view);
         setSupportActionBar(toolbar);
         //UpdateUtils.CheckUpdateGithub(this);
         UpdateUtils.CheckUpdateGithubBackground(this);
@@ -314,5 +322,37 @@ public class MainActivity extends AppCompatActivity {
         //#onDestroy don't listen on kill
         //#maybe should try services
         //SPUtils.put(this,fileName,LastPage);
+    }
+    private SearchView mSearchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_search_view, menu);
+        initSearch(menu);
+        return true;
+    }
+
+    /**
+     * 初始化搜索框
+     * @param menu
+     */
+    private void initSearch(Menu menu) {
+        MenuItem searchItem = menu.findItem(R.id.menu_search_view);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setSubmitButtonEnabled(true);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                int inputPage = Integer.parseInt(s);
+                if(inputPage<=PageCount){
+                    loadPdf(inputPage);
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return true;
+            }
+        });
     }
 }
