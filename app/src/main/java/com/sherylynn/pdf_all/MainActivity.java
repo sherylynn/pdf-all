@@ -1,13 +1,15 @@
 package com.sherylynn.pdf_all;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.SearchView;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.blankj.utilcode.util.LogUtils;
@@ -28,6 +30,16 @@ import com.alibaba.fastjson.JSONObject;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+
+//icon
+import com.mikepenz.iconics.context.*;
+import com.mikepenz.iconics.IconicsColor;
+import com.mikepenz.iconics.IconicsSize;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
+
+import com.google.android.material.floatingactionbutton.*;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -53,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     //private static String DocId=null;
     private static String DocId=null;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +180,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_search_view);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton mainFab = (FloatingActionButton) findViewById(R.id.fab);
+        mainFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_visibility)
+                .color(IconicsColor.colorInt(Color.WHITE)).size(IconicsSize.dp(24)));
+
         //UpdateUtils.CheckUpdateGithub(this);
         UpdateUtils.CheckUpdateGithubBackground(this);
         //SPUtils.put(this,"test",1);
@@ -356,4 +376,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*
+    //FAB
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(IconicsContextWrapper.wrap(newBase));
+    }
+    */
+
 }

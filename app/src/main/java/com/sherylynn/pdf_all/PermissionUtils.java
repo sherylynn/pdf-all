@@ -2,7 +2,8 @@ package com.sherylynn.pdf_all;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.app.Activity;
-import android.support.v4.app.ActivityCompat;
+
+import androidx.core.app.ActivityCompat;
 public class PermissionUtils {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
