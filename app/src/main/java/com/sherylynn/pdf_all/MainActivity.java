@@ -21,6 +21,9 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private String fileName = "test.pdf";
     private String showName = "";
     private PDFView pdfView;
+    private boolean toolbar_visiblity =true;
 
 
     //private static String DocId=null;
@@ -177,13 +181,8 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.toolbar_search_view);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton mainFab = (FloatingActionButton) findViewById(R.id.fab);
-        mainFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_visibility)
-                .color(IconicsColor.colorInt(Color.WHITE)).size(IconicsSize.dp(24)));
+        ToolbarFAB(this);
 
         //UpdateUtils.CheckUpdateGithub(this);
         UpdateUtils.CheckUpdateGithubBackground(this);
@@ -192,6 +191,26 @@ public class MainActivity extends AppCompatActivity {
         //pdfView.fromAsset("test.pdf").load();//打开在assets文件夹里面的资源
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
+    }
+    private void ToolbarFAB(Activity activity){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.toolbar_search_view);
+        setSupportActionBar(toolbar);
+        FloatingActionButton mainFab = (FloatingActionButton) findViewById(R.id.fab);
+        ToolbarFABUtils.show(activity,mainFab,toolbar);
+        mainFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(toolbar_visiblity==true){
+                    toolbar_visiblity=false;
+                    ToolbarFABUtils.hide(activity,mainFab,toolbar);
+                }else{
+                    toolbar_visiblity=true;
+                    ToolbarFABUtils.show(activity,mainFab,toolbar);
+                }
+
+            }
+        });
     }
     private void syncPage(Activity activity){
         new Thread(new Runnable(){
