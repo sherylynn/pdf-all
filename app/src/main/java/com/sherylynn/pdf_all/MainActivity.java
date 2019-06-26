@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private PDFView pdfView;
     private boolean toolbar_visiblity =true;
     private Toolbar toolbar = null;
+    private ActionBar actionBar = null;
     private FloatingActionButton mainFAB=null;
     private Activity selfActivity =this;
 
@@ -127,10 +128,14 @@ public class MainActivity extends AppCompatActivity {
                         public boolean onTap(MotionEvent e) {
                             LogUtils.v("单击了一次");
                             if(toolbar_visiblity==true){
-                                ToolbarFABUtils.hideToolbar(toolbar);
+                                //ToolbarFABUtils.hideToolbar(toolbar);
+                                //ToolbarFABUtils.hideActionBar(getSupportActionBar());
+                                ToolbarFABUtils.hide(selfActivity,mainFAB,actionBar);
 
                             }else{
-                                ToolbarFABUtils.showToolbar(toolbar);
+                                //ToolbarFABUtils.showToolbar(toolbar);
+                                //ToolbarFABUtils.hideActionBar(getSupportActionBar());
+                                ToolbarFABUtils.show(selfActivity,mainFAB,actionBar);
                             }
                             toolbar_visiblity=!toolbar_visiblity;
                             return false;
@@ -180,10 +185,12 @@ public class MainActivity extends AppCompatActivity {
                             public boolean onTap(MotionEvent e) {
                                 LogUtils.v("单击了一次");
                                 if(toolbar_visiblity==true){
-                                    ToolbarFABUtils.hideToolbar(toolbar);
+                                    //ToolbarFABUtils.hideToolbar(toolbar);
+                                    ToolbarFABUtils.hide(selfActivity,mainFAB,actionBar);
 
                                 }else{
-                                    ToolbarFABUtils.showToolbar(toolbar);
+                                    //ToolbarFABUtils.showToolbar(toolbar);
+                                    ToolbarFABUtils.show(selfActivity,mainFAB,actionBar);
                                 }
                                 toolbar_visiblity=!toolbar_visiblity;
                                 return false;
@@ -210,12 +217,14 @@ public class MainActivity extends AppCompatActivity {
                             public boolean onTap(MotionEvent e) {
                                 LogUtils.v("单击了一次");
                                 if(toolbar_visiblity==true){
-                                    ToolbarFABUtils.hide(selfActivity,mainFAB,toolbar);
+                                    //ToolbarFABUtils.hide(selfActivity,mainFAB,toolbar);
                                     //ToolbarFABUtils.hideToolbar(toolbar);
+                                    ToolbarFABUtils.hide(selfActivity,mainFAB,actionBar);
 
                                 }else{
-                                    ToolbarFABUtils.show(selfActivity,mainFAB,toolbar);
+                                    //ToolbarFABUtils.show(selfActivity,mainFAB,toolbar);
                                     //ToolbarFABUtils.showToolbar(toolbar);
+                                    ToolbarFABUtils.show(selfActivity,mainFAB,actionBar);
                                 }
                                 toolbar_visiblity=!toolbar_visiblity;
                                 return false;
@@ -227,15 +236,13 @@ public class MainActivity extends AppCompatActivity {
         Log.v("pdf-all-file", "最终："+"init完毕");
         // hide actionBar
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
 
-        toolbar=ToolbarInit(this);
+
+        toolbar=ToolbarInit(this,false);
         FABInit(this);
         //隐藏这个按钮
         mainFAB.hide();
+
         //ToolbarFAB(this);
 
         //UpdateUtils.CheckUpdateGithub(this);
@@ -246,11 +253,23 @@ public class MainActivity extends AppCompatActivity {
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
     }
-    private Toolbar ToolbarInit(Activity activity){
+    private Toolbar ToolbarInit(Activity activity,boolean visiblity){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_search_view);
         setSupportActionBar(toolbar);
-        ToolbarFABUtils.showToolbar(toolbar);
+        actionBar=getSupportActionBar();
+        if (visiblity){
+            toolbar_visiblity=true;
+            ToolbarFABUtils.showActionBar(actionBar);
+            //ToolbarFABUtils.showActionBar(getSupportActionBar());
+            //ToolbarFABUtils.showToolbar(toolbar);
+        }else{
+            toolbar_visiblity=false;
+            ToolbarFABUtils.hideActionBar(actionBar);
+            //ToolbarFABUtils.hideToolbar(toolbar);
+
+        }
+
         return toolbar;
     }
     private void FABInit(Activity activity){
@@ -262,10 +281,12 @@ public class MainActivity extends AppCompatActivity {
                 LogUtils.v("click FAB");
                 if(toolbar_visiblity==true){
                     //ToolbarFABUtils.visibilityOffFAB(activity,mainFAB);
-                    ToolbarFABUtils.hide(activity,mainFAB,toolbar);
+                    //ToolbarFABUtils.hide(activity,mainFAB,toolbar);
+                    ToolbarFABUtils.hide(activity,mainFAB,actionBar);
                 }else{
                     //ToolbarFABUtils.visibilityFAB(activity,mainFAB);
-                    ToolbarFABUtils.show(activity,mainFAB,toolbar);
+                    //ToolbarFABUtils.show(activity,mainFAB,toolbar);
+                    ToolbarFABUtils.show(activity,mainFAB,actionBar);
                 }
                 toolbar_visiblity=!toolbar_visiblity;
 
