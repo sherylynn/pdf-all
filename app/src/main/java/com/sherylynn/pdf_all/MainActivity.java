@@ -234,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar=ToolbarInit(this);
         FABInit(this);
+        //隐藏这个按钮
+        mainFAB.hide();
         //ToolbarFAB(this);
 
         //UpdateUtils.CheckUpdateGithub(this);
