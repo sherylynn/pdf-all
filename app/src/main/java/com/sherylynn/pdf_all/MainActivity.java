@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -36,6 +37,7 @@ import okhttp3.Response;
 
 
 //icon
+import com.github.barteksc.pdfviewer.listener.OnTapListener;
 import com.mikepenz.iconics.context.*;
 import com.mikepenz.iconics.IconicsColor;
 import com.mikepenz.iconics.IconicsSize;
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     private String showName = "";
     private PDFView pdfView;
     private boolean toolbar_visiblity =true;
+    private Toolbar toolbar = null;
+    private FloatingActionButton mainFAB=null;
+    private Activity selfActivity =this;
 
 
     //private static String DocId=null;
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         PermissionUtils.verifyStoragePermissions(this);
         Intent intent = getIntent();
+
         //直接打开
         if (intent!=null && intent.ACTION_VIEW.equals(intent.getAction())){
             uri = intent.getData();
@@ -114,6 +120,20 @@ public class MainActivity extends AppCompatActivity {
                             }
                             setTitle(String.format("%s %s /%s",showName,page,pageCount));
                             //setSubtitle
+                        }
+                    })
+                    .onTap(new OnTapListener() {
+                        @Override
+                        public boolean onTap(MotionEvent e) {
+                            LogUtils.v("单击了一次");
+                            if(toolbar_visiblity==true){
+                                ToolbarFABUtils.hideToolbar(toolbar);
+
+                            }else{
+                                ToolbarFABUtils.showToolbar(toolbar);
+                            }
+                            toolbar_visiblity=!toolbar_visiblity;
+                            return false;
                         }
                     })
                     .load();
@@ -155,6 +175,20 @@ public class MainActivity extends AppCompatActivity {
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
+                        .onTap(new OnTapListener() {
+                            @Override
+                            public boolean onTap(MotionEvent e) {
+                                LogUtils.v("单击了一次");
+                                if(toolbar_visiblity==true){
+                                    ToolbarFABUtils.hideToolbar(toolbar);
+
+                                }else{
+                                    ToolbarFABUtils.showToolbar(toolbar);
+                                }
+                                toolbar_visiblity=!toolbar_visiblity;
+                                return false;
+                            }
+                        })
                         .load();
             }else{
                 pdfView = (PDFView) findViewById(R.id.pdfView);
@@ -171,6 +205,22 @@ public class MainActivity extends AppCompatActivity {
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
+                        .onTap(new OnTapListener() {
+                            @Override
+                            public boolean onTap(MotionEvent e) {
+                                LogUtils.v("单击了一次");
+                                if(toolbar_visiblity==true){
+                                    ToolbarFABUtils.hide(selfActivity,mainFAB,toolbar);
+                                    //ToolbarFABUtils.hideToolbar(toolbar);
+
+                                }else{
+                                    ToolbarFABUtils.show(selfActivity,mainFAB,toolbar);
+                                    //ToolbarFABUtils.showToolbar(toolbar);
+                                }
+                                toolbar_visiblity=!toolbar_visiblity;
+                                return false;
+                            }
+                        })
                         .load();//打开在assets文件夹里面的资源
             }
         }
@@ -182,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
             actionBar.hide();
         }
 
-        ToolbarFAB(this);
+        toolbar=ToolbarInit(this);
+        FABInit(this);
+        //ToolbarFAB(this);
 
         //UpdateUtils.CheckUpdateGithub(this);
         UpdateUtils.CheckUpdateGithubBackground(this);
@@ -192,12 +244,36 @@ public class MainActivity extends AppCompatActivity {
         //pdfView.fromBytes().load();//本地打开
         //pdfView.fromFile(filePath).load();//网络下载打开，（）放字节数组
     }
-    private void ToolbarFAB(Activity activity){
+    private Toolbar ToolbarInit(Activity activity){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_search_view);
         setSupportActionBar(toolbar);
+        ToolbarFABUtils.showToolbar(toolbar);
+        return toolbar;
+    }
+    private void FABInit(Activity activity){
+        mainFAB = (FloatingActionButton) findViewById(R.id.fab);
+        ToolbarFABUtils.visibilityOffFAB(activity,mainFAB);
+        mainFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.v("click FAB");
+                if(toolbar_visiblity==true){
+                    //ToolbarFABUtils.visibilityOffFAB(activity,mainFAB);
+                    ToolbarFABUtils.hide(activity,mainFAB,toolbar);
+                }else{
+                    //ToolbarFABUtils.visibilityFAB(activity,mainFAB);
+                    ToolbarFABUtils.show(activity,mainFAB,toolbar);
+                }
+                toolbar_visiblity=!toolbar_visiblity;
+
+            }
+        });
+    }
+    private void ToolbarFAB(Activity activity){
         FloatingActionButton mainFab = (FloatingActionButton) findViewById(R.id.fab);
         ToolbarFABUtils.show(activity,mainFab,toolbar);
+
         mainFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

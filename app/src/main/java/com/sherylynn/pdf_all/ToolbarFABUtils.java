@@ -15,13 +15,25 @@ import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
 public class ToolbarFABUtils {
 
     public static void show(Activity activity, FloatingActionButton floatingActionButton, Toolbar toolbar){
-        floatingActionButton.setImageDrawable(new IconicsDrawable(activity, GoogleMaterial.Icon.gmd_visibility_off)
-                .color(IconicsColor.colorInt(Color.WHITE)).size(IconicsSize.dp(24)));
-        toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
+        visibilityOffFAB(activity,floatingActionButton);
+        showToolbar(toolbar);
     }
     public static void hide(Activity activity,FloatingActionButton floatingActionButton, Toolbar toolbar){
+        visibilityFAB(activity,floatingActionButton);
+        hideToolbar(toolbar);
+    }
+    public static void showToolbar(Toolbar toolbar){
+        toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
+    }
+    public static void hideToolbar(Toolbar toolbar){
+        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
+    }
+    public static void visibilityOffFAB(Activity activity,FloatingActionButton floatingActionButton){
+        floatingActionButton.setImageDrawable(new IconicsDrawable(activity, GoogleMaterial.Icon.gmd_visibility_off)
+                .color(IconicsColor.colorInt(Color.WHITE)).size(IconicsSize.dp(24)));
+    }
+    public static void visibilityFAB(Activity activity,FloatingActionButton floatingActionButton){
         floatingActionButton.setImageDrawable(new IconicsDrawable(activity, GoogleMaterial.Icon.gmd_visibility)
                 .color(IconicsColor.colorInt(Color.WHITE)).size(IconicsSize.dp(24)));
-        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 }
