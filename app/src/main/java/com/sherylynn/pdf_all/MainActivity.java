@@ -41,6 +41,7 @@ import okhttp3.Response;
 
 //icon
 import com.github.barteksc.pdfviewer.listener.OnTapListener;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.mikepenz.iconics.context.*;
 import com.mikepenz.iconics.IconicsColor;
 import com.mikepenz.iconics.IconicsSize;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                             //setSubtitle
                         }
                     })
+                    .scrollHandle(new DefaultScrollHandle(this))
                     .onTap(new OnTapListener() {
                         @Override
                         public boolean onTap(MotionEvent e) {
@@ -186,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
+                        .scrollHandle(new DefaultScrollHandle(this))
                         .onTap(new OnTapListener() {
                             @Override
                             public boolean onTap(MotionEvent e) {
@@ -219,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
+                        .scrollHandle(new DefaultScrollHandle(this))
                         .onTap(new OnTapListener() {
                             @Override
                             public boolean onTap(MotionEvent e) {
