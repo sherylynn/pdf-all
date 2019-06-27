@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 
 import android.content.Intent;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 
 import java.io.IOException;
+import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 
 import okhttp3.Call;
@@ -45,12 +48,13 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial;
 
 import com.google.android.material.floatingactionbutton.*;
+import com.shockwave.pdfium.PdfDocument;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnLoadCompleteListener {
     private Uri uri;
     private String uriString;
     private static int LastPage =1 ;
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             pdfView
                     .fromUri(uri)
                     .defaultPage(SPUtils.get(this,fileName,0))
+                    .onLoad(this)
                     .onPageChange(new OnPageChangeListener() {
                         @Override
                         public void onPageChanged(int page, int pageCount) {
@@ -172,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 pdfView
                         .fromUri(Uri.parse(LastPDFUriString))
                         .defaultPage(SPUtils.get(this,fileName,0))
+                        .onLoad(this)
                         .onPageChange(new OnPageChangeListener() {
                             @Override
                             public void onPageChanged(int page, int pageCount) {
@@ -202,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 pdfView
                         .fromAsset(fileName)
                         .defaultPage(SPUtils.get(this,fileName,0))
+                        .onLoad(this)
                         .onPageChange(new OnPageChangeListener() {
                             @Override
                             public void onPageChanged(int page, int pageCount) {
@@ -494,7 +501,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void loadComplete(int nbPages) {
+        PdfDocument.Meta meta = pdfView.getDocumentMeta();
+        Log.e(TAG, "title = " + meta.getTitle());
+        Log.e(TAG, "author = " + meta.getAuthor());
+        Log.e(TAG, "subject = " + meta.getSubject());
+        Log.e(TAG, "keywords = " + meta.getKeywords());
+        Log.e(TAG, "creator = " + meta.getCreator());
+        Log.e(TAG, "producer = " + meta.getProducer());
+        Log.e(TAG, "creationDate = " + meta.getCreationDate());
+        Log.e(TAG, "modDate = " + meta.getModDate());
 
+        printBookmarksTree(pdfView.getTableOfContents(), "-");
+
+    }
+    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
+        for (PdfDocument.Bookmark b : tree) {
+
+            Log.e(TAG, String.format("%s %s, p %d", sep, b.getTitle(), b.getPageIdx()));
+
+            if (b.hasChildren()) {
+                printBookmarksTree(b.getChildren(), sep + "-");
+            }
+        }
+    }
     /*
     //FAB
     @Override
