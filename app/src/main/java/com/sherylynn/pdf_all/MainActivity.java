@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                             //setSubtitle
                         }
                     })
-                    .scrollHandle(new DefaultScrollHandle(this))
+                    .scrollHandle(new SmallHandle(this))
                     .onTap(new OnTapListener() {
                         @Override
                         public boolean onTap(MotionEvent e) {
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
-                        .scrollHandle(new DefaultScrollHandle(this))
+                        .scrollHandle(new SmallHandle(this))
                         .onTap(new OnTapListener() {
                             @Override
                             public boolean onTap(MotionEvent e) {
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements OnLoadCompleteLis
                                 setTitle(String.format("%s %s /%s",fileName,page,pageCount));
                             }
                         })
-                        .scrollHandle(new DefaultScrollHandle(this))
+                        .scrollHandle(new SmallHandle(this))
                         .onTap(new OnTapListener() {
                             @Override
                             public boolean onTap(MotionEvent e) {
