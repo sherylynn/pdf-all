@@ -110,7 +110,7 @@ public class SmallHandle extends RelativeLayout implements ScrollHandle {
     @Override
     public void setScroll(float position) {
         if (!shown()) {
-            //show();
+            show();
         } else {
             handler.removeCallbacks(hidePageScrollerRunnable);
         }
