@@ -276,7 +276,7 @@ var username = 'henrybolt';
 var identifier = unicode(this.documentFileName);
 var self = this;
 var lastUploadPageNum = -1;
-var origin = 'http://120.78.64.125:10000';
+var origin = 'http://sherylynn.eicp.net:10000';
 console.println(this.docID[0]);
 console.println(this.docID[1]);
 console.println(identifier);
