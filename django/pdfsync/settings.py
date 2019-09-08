@@ -25,7 +25,8 @@ SECRET_KEY = '16@_t&(4_5a@b)81kn=3o@%&)4s=n+ru46ca-tdt*ze-i)b)sk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','sherylynn.eicp.net','127.0.0.1']
+#setting for host
 
 
 # Application definition
