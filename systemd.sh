@@ -19,6 +19,7 @@ Type=simple
 ;ExecStartPre=/bin/bash --login -c 'env > /tmp/.new-env-file'
 ;EnvironmentFile=$HOME/.env.file
 Environment="PYTHONPATH=$PYTHONPATH"
+Environment="PYTHONUSERBASE=$PYTHONUSERBASE"
 Environment="FUCK=hehe"
 PrivateTmp=true
 Restart=on-abnormal
