@@ -242,19 +242,7 @@ function getJsonStrFromMsg (msg){
     return jsonStr;
 }
 
-function http (method, cURL, callback) {
-    Net.HTTP.request({
-        cVerb: method,
-        cURL: cURL,
-        oHandler: {
-            response: function (msg, url, e) {
-                var jsonStr = getJsonStrFromMsg(msg);
-                var data = JSON.parse(jsonStr);
-                callback(data);
-            }
-        }
-    });
-}
+
 
 function unicode(str){
     var value='';
@@ -276,10 +264,43 @@ DocsSelf = app.trustedFunction( function ( oArgs )
 {   
   app.beginPriv();
   var DocsRetn = app.activeDocs; 
+  var httpRetn = function(method, cURL, callback) {
+    Net.HTTP.request({
+        cVerb: method,
+        cURL: cURL,
+        oHandler: {
+            response: function (msg, url, e) {
+                var jsonStr = getJsonStrFromMsg(msg);
+                var data = JSON.parse(jsonStr);
+                callback(data);
+            }
+        }
+    });
+  }
   app.endPriv(); 
-  return DocsRetn; 
+  return [DocsRetn,httpRetn]; 
 });
+
+http= app.trustedFunction( function ( method,cURL,callback ) 
+{   
+  app.beginPriv();
+    Net.HTTP.request({
+        cVerb: method,
+        cURL: cURL,
+        oHandler: {
+            response: function (msg, url, e) {
+                var jsonStr = getJsonStrFromMsg(msg);
+                var data = JSON.parse(jsonStr);
+                callback(data);
+            }
+        }
+    });
+  app.endPriv(); 
+  return null;
+});
+
 var self=null;
+//var http=null;
 /*
 会阻塞到死
 for (; !DocsSelf()[0]; ) {
@@ -287,21 +308,21 @@ for (; !DocsSelf()[0]; ) {
 }*/
 
 var username = 'henrybolt';
-var doc_zero;
+var doc_zero = null;
 var lastUploadPageNum = -1;
 var origin = 'http://sherylynn.eicp.net:10000';
 function getLatestProgress () {
-  if(!self==false){
+  if(!self==false && !doc_zero){
     identifier = unicode(self.documentFileName);
-    console.println(identifier);
     var url = origin + '/get_latest_progress?username=' + username + '&identifier=' + identifier;
-    console.println("进度获取地址"+url);
+    console.println("get url link is :"+url);
     http('GET', url, function (data) {
         self.pageNum=data.page_num;
+        console.println("remote page is "+data.page_num);
+        doc_zero=1;
     });
-    app.clearInterval('initDoc')
   }else{
-    self=DocsSelf()[0]
+    self=DocsSelf()[0][0]
   }
 }
 var initDoc = app.setInterval('getLatestProgress()', 1000);
@@ -315,7 +336,7 @@ function updateProgress () {
         return; 
     }
     var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + pageNum;
-    console.println("进度推送地址"+url);
+    console.println("send link is :"+url);
     http('GET', url, function (data) {
         // console.println(data.data +'  =  ' + data.err);
         lastUploadPageNum= pageNum;
