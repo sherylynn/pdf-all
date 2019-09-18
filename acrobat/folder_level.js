@@ -264,21 +264,8 @@ DocsSelf = app.trustedFunction( function ( oArgs )
 {   
   app.beginPriv();
   var DocsRetn = app.activeDocs; 
-  var httpRetn = function(method, cURL, callback) {
-    Net.HTTP.request({
-        cVerb: method,
-        cURL: cURL,
-        oHandler: {
-            response: function (msg, url, e) {
-                var jsonStr = getJsonStrFromMsg(msg);
-                var data = JSON.parse(jsonStr);
-                callback(data);
-            }
-        }
-    });
-  }
   app.endPriv(); 
-  return [DocsRetn,httpRetn]; 
+  return DocsRetn; 
 });
 
 http= app.trustedFunction( function ( method,cURL,callback ) 
@@ -299,49 +286,47 @@ http= app.trustedFunction( function ( method,cURL,callback )
   return null;
 });
 
-var self=null;
-//var http=null;
-/*
-会阻塞到死
-for (; !DocsSelf()[0]; ) {
-  self=DocsSelf()[0] ;
-}*/
-
 var username = 'henrybolt';
-var doc_zero = null;
 var lastUploadPageNum = -1;
-var origin = 'http://sherylynn.eicp.net:10000';
+var origin = 'https://pdf.sherylynn.win';
 function getLatestProgress () {
-  if(!self==false && !doc_zero){
-    identifier = unicode(self.documentFileName);
-    var url = origin + '/get_latest_progress?username=' + username + '&identifier=' + identifier;
-    console.println("get url link is :"+url);
-    http('GET', url, function (data) {
-        self.pageNum=data.page_num;
-        console.println("remote page is "+data.page_num);
-        doc_zero=1;
-    });
-  }else{
-    self=DocsSelf()[0][0]
-  }
+    // 直接避免了长度不存在的情况
+    for (var index = 0; index < DocsSelf().length; index++) {
+        var self = DocsSelf()[index];
+        // for not init
+        if(!self.doc_init){
+            var identifier = unicode(self.documentFileName);
+            var url = origin + '/get_latest_progress?username=' + username + '&identifier=' + identifier;
+            console.println(self.documentFileName+" get url link is :"+url);
+            http('GET', url, function (data) {
+                self.pageNum=data.page_num;
+                console.println(self.documentFileName+" remote page is "+data.page_num);
+                self.doc_init=1
+            });
+        }
+    }
 }
 var initDoc = app.setInterval('getLatestProgress()', 1000);
 
 
 function updateProgress () {
-  if(!self==false){
-    identifier = unicode(self.documentFileName);
-    var pageNum = self.pageNum;
-    if (pageNum == lastUploadPageNum) {
-        return; 
+    for (var index = 0; index < DocsSelf().length; index++) {
+        var self = DocsSelf()[index];
+        // for had init
+        if(!self.doc_init==false){
+            identifier = unicode(self.documentFileName);
+            var pageNum = self.pageNum;
+            if (pageNum == self.lastUploadPageNum) {
+                return; 
+            }
+            var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + pageNum;
+            console.println(self.documentFileName+" send link is :"+url);
+            http('GET', url, function (data) {
+                // console.println(data.data +'  =  ' + data.err);
+                self.lastUploadPageNum= pageNum;
+            });
+        }
     }
-    var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + pageNum;
-    console.println("send link is :"+url);
-    http('GET', url, function (data) {
-        // console.println(data.data +'  =  ' + data.err);
-        lastUploadPageNum= pageNum;
-    });
-  }
 }
 
 var timer = app.setInterval('updateProgress()', 10000);
