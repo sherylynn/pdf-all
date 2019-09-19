@@ -268,7 +268,7 @@ DocsSelf = app.trustedFunction( function ( oArgs )
   return DocsRetn; 
 });
 
-http= app.trustedFunction( function ( method,cURL,callback ) 
+http= app.trustedFunction( function ( method,cURL,index,callback ) 
 {   
   app.beginPriv();
     Net.HTTP.request({
@@ -278,7 +278,7 @@ http= app.trustedFunction( function ( method,cURL,callback )
             response: function (msg, url, e) {
                 var jsonStr = getJsonStrFromMsg(msg);
                 var data = JSON.parse(jsonStr);
-                callback(data);
+                callback(index,data);
             }
         }
     });
@@ -297,8 +297,9 @@ function getLatestProgress () {
         if(!self.doc_init){
             var identifier = unicode(self.documentFileName);
             var url = origin + '/get_latest_progress?username=' + username + '&identifier=' + identifier;
-            console.println(self.documentFileName+" get url link is :"+url);
-            http('GET', url, function (data) {
+            //console.println(self.documentFileName+" get url link is :"+url);
+            http('GET', url,index, function (index,data) {
+                var self = DocsSelf()[index]
                 self.pageNum=data.page_num;
                 console.println(self.documentFileName+" remote page is "+data.page_num);
                 self.doc_init=1
@@ -314,12 +315,13 @@ function updateProgress () {
         var self = DocsSelf()[index];
         // for had init
         if(!self.doc_init==false){
-            identifier = unicode(self.documentFileName);
+            var identifier = unicode(self.documentFileName);
             if ( self.pageNum != self.lastUploadPageNum) {
                 var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + self.pageNum;
-                console.println(self.documentFileName+" send link is :"+url);
-                http('GET', url, function (data) {
+                http('GET', url,index, function (index,data) {
+                    var self = DocsSelf()[index]
                     // console.println(data.data +'  =  ' + data.err);
+                    console.println(self.documentFileName+" send link is :"+url);
                     self.lastUploadPageNum= self.pageNum;
                 });
             }
