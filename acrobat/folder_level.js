@@ -286,7 +286,7 @@ http= app.trustedFunction( function ( method,cURL,index,callback )
   return null;
 });
 
-var username = 'henrybolt';
+var username = 'guest';
 var lastUploadPageNum = -1;
 var origin = 'https://pdf.sherylynn.win';
 function getLatestProgress () {
