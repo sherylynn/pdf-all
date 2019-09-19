@@ -315,17 +315,14 @@ function updateProgress () {
         // for had init
         if(!self.doc_init==false){
             identifier = unicode(self.documentFileName);
-
-            if ( self.pageNum == self.lastUploadPageNum) {
-                continue; 
+            if ( self.pageNum != self.lastUploadPageNum) {
+                var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + self.pageNum;
+                console.println(self.documentFileName+" send link is :"+url);
+                http('GET', url, function (data) {
+                    // console.println(data.data +'  =  ' + data.err);
+                    self.lastUploadPageNum= self.pageNum;
+                });
             }
-            
-            var url = origin + '/update_progress?username=' + username + '&identifier=' + identifier + '&page_num=' + self.pageNum;
-            console.println(self.documentFileName+" send link is :"+url);
-            http('GET', url, function (data) {
-                // console.println(data.data +'  =  ' + data.err);
-                self.lastUploadPageNum= self.pageNum;
-            });
         }
     }
 }
