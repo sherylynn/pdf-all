@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"io/ioutil"
@@ -6,13 +7,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var jsonPath = "../django/homepage/progress.json"
 
-func writeProcess(username string, identifier string, pageNum string) {
+func writeProcess(username string, identifier string, pageNum int) {
 	_, progressMap := readProgress(username, identifier)
 	key := username + "=" + identifier
 	progressMap[key] = pageNum
@@ -24,22 +25,16 @@ func writeProcess(username string, identifier string, pageNum string) {
 
 }
 
-func readProgress(username string, identifier string) (int, map[string]interface{}) {
-	progressjsonfile, err := ioutil.readfile(jsonPath)
+func readProgress(username string, identifier string) (int, map[string]int) {
+	progressJSONFile, err := ioutil.ReadFile(jsonPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 	progressJSON := string(progressJSONFile)
 	key := username + "=" + identifier
-	progressMap := make(map[string]interface{})
+	progressMap := make(map[string]int)
 	json.Unmarshal([]byte(progressJSON), &progressMap)
-	//pageNum := strconv.ParseInt(jsoniter.Get([]byte(progressJSON), key))
-	pageNum := (progressMap[key])
-	if pageNum == nil {
-		pageNum = 0
-	} else {
-		pageNum = strconv.ParseInt(pageNum.ToString())
-	}
+	pageNum := progressMap[key]
 	return pageNum, progressMap
 }
 
@@ -48,8 +43,9 @@ func main() {
 	r.GET("/update_progress", func(c *gin.Context) {
 		username := c.Query("username")
 		identifier := c.Query("identifier")
-		pageNum := c.DefaultQuery("page_num", "0")
+		pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "0"))
 		writeProcess(username, identifier, pageNum)
+		fmt.Println(username)
 		c.JSON(200, gin.H{
 			"data": "ok",
 			"err":  "",
@@ -66,4 +62,3 @@ func main() {
 	})
 	r.Run(":10000") // listen and serve on 0.0.0.0:8080
 }
-
