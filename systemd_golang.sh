@@ -17,7 +17,7 @@ Type=simple
 ;EnvironmentFile=$HOME/.env.file
 PrivateTmp=true
 Restart=on-abnormal
-ExecStart=$(cd "$(dirname "$0")"/golang;pwd)/golang
+ExecStart=$(cd "$(dirname "$0")";pwd)/server_golang.sh
 EOF
 
 sudo tee -a /etc/systemd/system/pdfall.service <<-'EOF'

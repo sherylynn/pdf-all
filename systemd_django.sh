@@ -23,7 +23,7 @@ Environment="PYTHONUSERBASE=$PYTHONUSERBASE"
 Environment="FUCK=hehe"
 PrivateTmp=true
 Restart=on-abnormal
-ExecStart=$(cd "$(dirname "$0")";pwd)/server.sh
+ExecStart=$(cd "$(dirname "$0")";pwd)/server_django.sh
 EOF
 
 sudo tee -a /etc/systemd/system/pdfall.service <<-'EOF'

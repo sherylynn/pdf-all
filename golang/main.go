@@ -40,6 +40,8 @@ func readProgress(username string, identifier string) (int, map[string]int) {
 }
 
 func main() {
+	str, _ := os.Getwd()
+	fmt.Println(str)
 	r := gin.Default()
 	r.GET("/update_progress", func(c *gin.Context) {
 		username := c.Query("username")
