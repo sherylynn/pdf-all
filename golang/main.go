@@ -21,6 +21,7 @@ func writeProcess(username string, identifier string, pageNum int) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Printf("%s\n",progressJSONStr)
 	ioutil.WriteFile(jsonPath, progressJSONStr, os.ModeAppend)
 
 }
