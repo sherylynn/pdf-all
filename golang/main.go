@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -76,21 +75,26 @@ func main() {
 			fmt.Println(err)
 		}
 		fmt.Println(string(output))
-		response, err := http.Get("http://127.0.0.1:10000/progress_cn.json")
-		if err != nil || response.StatusCode != http.StatusOK {
-			c.Status(http.StatusServiceUnavailable)
-			return
-		}
 
-		reader := response.Body
-		contentLength := response.ContentLength
-		contentType := response.Header.Get("Content-Type")
+		c.Request.URL.Path = "/progress_cn.json"
+		r.HandleContext(c)
+		/*
+			response, err := http.Get("http://127.0.0.1:10000/progress_cn.json")
+			if err != nil || response.StatusCode != http.StatusOK {
+				c.Status(http.StatusServiceUnavailable)
+				return
+			}
 
-		extraHeaders := map[string]string{
-			"Content-Disposition": `attachment; filename="all.json"`,
-		}
+			reader := response.Body
+			contentLength := response.ContentLength
+			contentType := response.Header.Get("Content-Type")
 
-		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+			extraHeaders := map[string]string{
+				"Content-Disposition": `attachment; filename="all.json"`,
+			}
+
+			c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+		*/
 	})
 
 	r.Run(":10000") // listen and serve on 0.0.0.0:8080
