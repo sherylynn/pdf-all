@@ -69,6 +69,7 @@ func main() {
 	// serve static progress_cn.json
 	r.StaticFile("/progress_cn.json", jsonPath_cn)
 
+	// will call nodejs to generate progress_cn.json
 	r.GET("/all", func(c *gin.Context) {
 		output, err := exec.Command("node", "./../nodejs/allProgress.js").Output()
 		if err != nil {
