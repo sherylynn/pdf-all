@@ -1,5 +1,5 @@
 var fs=require('fs')
-var jsonPath = "../django/homepage/progress.json"
+var jsonPath = __dirname+"/../django/homepage/progress.json"
 var progress=require(jsonPath)
 var progress_cn={}
 // not standard unescape method
@@ -42,7 +42,7 @@ for(var id in progress){  // progress is obj ; so for in
 
 var progress_cn_stringify=JSON.stringify(progress_cn,null,'\t')
 
-fs.writeFile('progress_cn.json',progress_cn_stringify, 'utf8', (err) => {
+fs.writeFile(__dirname+'/progress_cn.json',progress_cn_stringify, 'utf8', (err) => {
   if (err) throw err;
   console.log('done');
 });
