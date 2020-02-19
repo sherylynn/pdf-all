@@ -44,3 +44,14 @@ local_settings.py
 
 .env
 db.sqlite3
+
+### golang ###
+
+golang/golang.exe
+golang/golang
+golang/main.exe
+
+
+### nodejs ###
+
+nodejs/progress_cn.json

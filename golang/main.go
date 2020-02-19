@@ -21,7 +21,7 @@ func writeProcess(username string, identifier string, pageNum int) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%s\n",progressJSONStr)
+	fmt.Printf("%s\n", progressJSONStr)
 	ioutil.WriteFile(jsonPath, progressJSONStr, os.ModeAppend)
 
 }
@@ -61,7 +61,16 @@ func main() {
 		c.JSON(200, gin.H{
 			"page_num": pageNum,
 			"err":      "",
+		}
+	})
+	// serve static progress.json
+	r.StaticFile("/all", jsonPath)
+	/*
+	r.GET("/all", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+
 		})
 	})
+	*/
 	r.Run(":10000") // listen and serve on 0.0.0.0:8080
 }
