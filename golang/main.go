@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +14,7 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var jsonPath = "../django/homepage/progress.json"
+var jsonPath_cn = "../nodejs/progress_cn.json"
 
 func writeProcess(username string, identifier string, pageNum int) {
 	_, progressMap := readProgress(username, identifier)
@@ -61,16 +64,33 @@ func main() {
 		c.JSON(200, gin.H{
 			"page_num": pageNum,
 			"err":      "",
-		}
-	})
-	// serve static progress.json
-	r.StaticFile("/all", jsonPath)
-	/*
-	r.GET("/all", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-
 		})
 	})
-	*/
+	// serve static progress_cn.json
+	r.StaticFile("/progress_cn.json", jsonPath_cn)
+
+	r.GET("/all", func(c *gin.Context) {
+		output, err := exec.Command("node", "./../nodejs/allProgress.js").Output()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(string(output))
+		response, err := http.Get("http://127.0.0.1:10000/progress_cn.json")
+		if err != nil || response.StatusCode != http.StatusOK {
+			c.Status(http.StatusServiceUnavailable)
+			return
+		}
+
+		reader := response.Body
+		contentLength := response.ContentLength
+		contentType := response.Header.Get("Content-Type")
+
+		extraHeaders := map[string]string{
+			"Content-Disposition": `attachment; filename="all.json"`,
+		}
+
+		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+	})
+
 	r.Run(":10000") // listen and serve on 0.0.0.0:8080
 }
