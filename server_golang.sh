@@ -6,4 +6,5 @@ realpath(){
 }
 cd $(realpath ./golang)
 pwd
+test -f ../../tools/rc/noderc && . ../../tools/rc/noderc
 ./golang
