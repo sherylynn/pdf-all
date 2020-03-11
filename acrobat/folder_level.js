@@ -288,7 +288,7 @@ http= app.trustedFunction( function ( method,cURL,index,callback )
 
 var username = 'guest';
 var lastUploadPageNum = -1;
-var origin = 'https://pdf.sherylynn.win';
+var origin = 'http://pdf.sherylynn.win:10000';
 function getLatestProgress () {
     // 直接避免了长度不存在的情况
     for (var index = 0; index < DocsSelf().length; index++) {
