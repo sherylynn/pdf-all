@@ -28,7 +28,6 @@ func codeTochar(identifier string) string {
 		char_array += fmt.Sprintf("%c", true_code)
 	}
 	identifier_cn := char_array
-	fmt.Println(identifier_cn)
 	return identifier_cn
 }
 
@@ -36,11 +35,10 @@ func writeProcess(username string, identifier string, pageNum int) {
 	identifier_cn := codeTochar(identifier)
 	_, progressMap := readProgress(username, identifier_cn)
 	progressMap[username][identifier_cn] = pageNum
-	progressJSONStr, err := json.MarshalIndent(progressMap, "", "\t")
+	progressJSONStr, err := json.MarshalIndent(progressMap, "", "  ")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%s\n", progressJSONStr)
 	ioutil.WriteFile(jsonPath, progressJSONStr, os.ModeAppend)
 
 }
@@ -58,15 +56,12 @@ func readProgress(username string, identifier string) (int, map[string]map[strin
 }
 
 func main() {
-	str, _ := os.Getwd()
-	fmt.Println(str)
 	r := gin.Default()
 	r.GET("/update_progress", func(c *gin.Context) {
 		username := c.Query("username")
 		identifier := c.Query("identifier")
 		pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "0"))
 		writeProcess(username, identifier, pageNum)
-		fmt.Println(username)
 		c.JSON(200, gin.H{
 			"data": "ok",
 			"err":  "",
