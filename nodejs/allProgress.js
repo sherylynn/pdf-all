@@ -20,6 +20,8 @@ for(var id in progress){
 for(var id in progress){  // progress is obj ; so for in
   // split henrybolt=
   old_id=id
+  // depend on user
+  user=id.split('=')[0]
   id=id.split('=')[1]
   // split \\u
   id_array=id.split('\\u')
@@ -36,9 +38,12 @@ for(var id in progress){  // progress is obj ; so for in
     char_array+=String.fromCharCode(true_code)
   }
   //console.log(char_array)
-  progress_cn[char_array]=progress[old_id]
+  if(!progress_cn[user]){
+    progress_cn[user]={}
+  }
+  progress_cn[user][char_array]=progress[old_id]
 }
-//console.log(progress_cn)
+console.log(progress_cn)
 
 var progress_cn_stringify=JSON.stringify(progress_cn,null,'\t')
 
