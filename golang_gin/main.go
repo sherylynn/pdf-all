@@ -1,16 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
 )
 
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var jsonPath = "./progress_cn.json"
 
 func codeTochar(identifier string) string {
@@ -29,8 +30,10 @@ func codeTochar(identifier string) string {
 	identifier_cn := char_array
 	return identifier_cn
 }
+
 func writeProcess(username string, identifier_cn string, pageNum int) {
 	_, progressMap := readProgress(username, identifier_cn)
+	fmt.Println(progressMap)
 	if progressMap == nil {
 		progressMap = make(map[string]map[string]int)
 	}
@@ -43,6 +46,7 @@ func writeProcess(username string, identifier_cn string, pageNum int) {
 		fmt.Println(err)
 	}
 	ioutil.WriteFile(jsonPath, progressJSONStr, 0666)
+
 }
 func readProgress(username string, identifier_cn string) (int, map[string]map[string]int) {
 
@@ -57,40 +61,36 @@ func readProgress(username string, identifier_cn string) (int, map[string]map[st
 	}
 	progressJSON := string(progressJSONContent)
 
-	progressMap := map[string]map[string]int{}
+	progressMap := make(map[string]map[string]int)
 	json.Unmarshal([]byte(progressJSON), &progressMap)
+	fmt.Println(progressMap)
 	pageNum := progressMap[username][identifier_cn]
 	return pageNum, progressMap
 }
 
-func update_progress(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	username := r.Form["username"][0]
-	identifier := r.Form["identifier"][0]
-	identifier_cn := codeTochar(identifier)
-	pageNum, _ := strconv.Atoi(r.Form.Get("page_num"))
-	writeProcess(username, identifier_cn, pageNum)
-	message := make(map[string]string)
-	message["data"] = "ok"
-	json.NewEncoder(w).Encode(message)
-}
-
-func get_latest_progress(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	username := r.Form["username"][0]
-	identifier := r.Form["identifier"][0]
-	identifier_cn := codeTochar(identifier)
-	pageNum, _ := readProgress(username, identifier_cn)
-	message := make(map[string]int)
-	message["page_num"] = pageNum
-	json.NewEncoder(w).Encode(message)
-}
-
 func main() {
-	http.HandleFunc("/update_progress", update_progress)         //设置访问的路由
-	http.HandleFunc("/get_latest_progress", get_latest_progress) //设置访问的路由
-	err := http.ListenAndServe(":10000", nil)                    //设置监听的端口
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	r := gin.Default()
+	r.GET("/update_progress", func(c *gin.Context) {
+		username := c.Query("username")
+		identifier := c.Query("identifier")
+		identifier_cn := codeTochar(identifier)
+		pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "0"))
+		writeProcess(username, identifier_cn, pageNum)
+		c.JSON(200, gin.H{
+			"data": "ok",
+			"err":  "",
+		})
+	})
+	r.GET("/get_latest_progress", func(c *gin.Context) {
+		username := c.Query("username")
+		identifier := c.Query("identifier")
+		identifier_cn := codeTochar(identifier)
+		pageNum, _ := readProgress(username, identifier_cn)
+		c.JSON(200, gin.H{
+			"page_num": pageNum,
+			"err":      "",
+		})
+	})
+
+	r.Run(":10000") // listen and serve on 0.0.0.0:8080
 }

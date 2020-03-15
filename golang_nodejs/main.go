@@ -13,7 +13,7 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var jsonPath = "../django/homepage/progress.json"
-var jsonPath_cn = "../nodejs/progress_cn.json"
+var jsonPath_cn = "../golang_nodejs/progress_cn.json"
 
 func writeProcess(username string, identifier string, pageNum int) {
 	_, progressMap := readProgress(username, identifier)

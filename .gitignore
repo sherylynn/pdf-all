@@ -47,9 +47,9 @@ db.sqlite3
 
 ### golang ###
 
-golang/golang.exe
-golang/golang
-golang/main.exe
+golang*/*.exe
+golang*/golang*
+golang*/main.exe
 
 
 ### nodejs ###
