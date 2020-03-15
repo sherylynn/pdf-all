@@ -45,7 +45,7 @@ func writeProcess(username string, identifier_cn string, pageNum int) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	ioutil.WriteFile(jsonPath, progressJSONStr, os.ModeAppend)
+	ioutil.WriteFile(jsonPath, progressJSONStr, 0666)
 
 }
 func readProgress(username string, identifier_cn string) (int, map[string]map[string]int) {
