@@ -33,6 +33,13 @@ func codeTochar(identifier string) string {
 
 func writeProcess(username string, identifier_cn string, pageNum int) {
 	_, progressMap := readProgress(username, identifier_cn)
+	fmt.Println(progressMap)
+	if progressMap == nil {
+		progressMap = make(map[string]map[string]int)
+	}
+	if progressMap[username] == nil {
+		progressMap[username] = make(map[string]int)
+	}
 	progressMap[username][identifier_cn] = pageNum
 	progressJSONStr, err := json.MarshalIndent(progressMap, "", "  ")
 	if err != nil {
@@ -42,13 +49,21 @@ func writeProcess(username string, identifier_cn string, pageNum int) {
 
 }
 func readProgress(username string, identifier_cn string) (int, map[string]map[string]int) {
-	progressJSONFile, err := ioutil.ReadFile(jsonPath)
+
+	progressJSONFile, err := os.OpenFile(jsonPath, os.O_CREATE, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer progressJSONFile.Close()
+	progressJSONContent, err := ioutil.ReadAll(progressJSONFile)
 	if err != nil {
 		fmt.Println(err)
 	}
-	progressJSON := string(progressJSONFile)
-	progressMap := map[string]map[string]int{}
+	progressJSON := string(progressJSONContent)
+
+	progressMap := make(map[string]map[string]int)
 	json.Unmarshal([]byte(progressJSON), &progressMap)
+	fmt.Println(progressMap)
 	pageNum := progressMap[username][identifier_cn]
 	return pageNum, progressMap
 }
