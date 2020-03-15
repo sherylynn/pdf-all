@@ -73,6 +73,7 @@ func update_progress(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	//要先r.ParseForm()才能解析
 	username := r.Form["username"][0]
+	//fmt.Println(username)
 	//获取的是数组，需要指定第一个
 	identifier := r.Form["identifier"][0]
 	identifier_cn := codeTochar(identifier)
@@ -101,7 +102,7 @@ func get_latest_progress(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/update_progress", update_progress)         //设置访问的路由
 	http.HandleFunc("/get_latest_progress", get_latest_progress) //设置访问的路由
-	err := http.ListenAndServe(":6666", nil)                    //设置监听的端口
+	err := http.ListenAndServe(":8888", nil)                     //设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
