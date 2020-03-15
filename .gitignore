@@ -50,7 +50,7 @@ db.sqlite3
 golang*/*.exe
 golang*/golang*
 golang*/main.exe
-
+golang*/progress_cn.json
 
 ### nodejs ###
 
