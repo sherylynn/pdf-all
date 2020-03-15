@@ -101,7 +101,7 @@ func get_latest_progress(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/update_progress", update_progress)         //设置访问的路由
 	http.HandleFunc("/get_latest_progress", get_latest_progress) //设置访问的路由
-	err := http.ListenAndServe(":10000", nil)                    //设置监听的端口
+	err := http.ListenAndServe(":6666", nil)                    //设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
