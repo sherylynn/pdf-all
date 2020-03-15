@@ -31,8 +31,7 @@ func codeTochar(identifier string) string {
 	return identifier_cn
 }
 
-func writeProcess(username string, identifier string, pageNum int) {
-	identifier_cn := codeTochar(identifier)
+func writeProcess(username string, identifier_cn string, pageNum int) {
 	_, progressMap := readProgress(username, identifier_cn)
 	progressMap[username][identifier_cn] = pageNum
 	progressJSONStr, err := json.MarshalIndent(progressMap, "", "  ")
@@ -42,13 +41,12 @@ func writeProcess(username string, identifier string, pageNum int) {
 	ioutil.WriteFile(jsonPath, progressJSONStr, os.ModeAppend)
 
 }
-func readProgress(username string, identifier string) (int, map[string]map[string]int) {
+func readProgress(username string, identifier_cn string) (int, map[string]map[string]int) {
 	progressJSONFile, err := ioutil.ReadFile(jsonPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 	progressJSON := string(progressJSONFile)
-	identifier_cn := codeTochar(identifier)
 	progressMap := map[string]map[string]int{}
 	json.Unmarshal([]byte(progressJSON), &progressMap)
 	pageNum := progressMap[username][identifier_cn]
@@ -60,8 +58,9 @@ func main() {
 	r.GET("/update_progress", func(c *gin.Context) {
 		username := c.Query("username")
 		identifier := c.Query("identifier")
+		identifier_cn := codeTochar(identifier)
 		pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "0"))
-		writeProcess(username, identifier, pageNum)
+		writeProcess(username, identifier_cn, pageNum)
 		c.JSON(200, gin.H{
 			"data": "ok",
 			"err":  "",
@@ -70,7 +69,8 @@ func main() {
 	r.GET("/get_latest_progress", func(c *gin.Context) {
 		username := c.Query("username")
 		identifier := c.Query("identifier")
-		pageNum, _ := readProgress(username, identifier)
+		identifier_cn := codeTochar(identifier)
+		pageNum, _ := readProgress(username, identifier_cn)
 		c.JSON(200, gin.H{
 			"page_num": pageNum,
 			"err":      "",
